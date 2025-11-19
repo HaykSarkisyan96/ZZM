@@ -1,15 +1,17 @@
-// Smooth scroll for CTA buttons (только для кнопок без ссылок)
-document.querySelectorAll('.cta-button').forEach(button => {
-    // Проверяем, является ли элемент ссылкой - если да, не блокируем переход
-    if (button.tagName === 'A' && button.href) {
-        // Это ссылка, не блокируем переход
-        return;
-    }
-    // Это кнопка без ссылки, можно добавить обработчик
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        // Здесь можно добавить логику перехода к боту или обработке заявки
-        console.log('CTA clicked');
+// CTA buttons - обработчик только для кнопок без ссылок
+// ВАЖНО: Ссылки (<a>) не должны иметь обработчиков, которые блокируют переход
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.cta-button').forEach(element => {
+        // Пропускаем все элементы <a> (ссылки) - они должны работать как обычные ссылки
+        if (element.tagName === 'A' || element.nodeName === 'A' || element.href) {
+            // Это ссылка, не добавляем обработчик
+            return;
+        }
+        // Это кнопка (не ссылка), можно добавить обработчик
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('CTA button clicked (not a link)');
+        });
     });
 });
 
