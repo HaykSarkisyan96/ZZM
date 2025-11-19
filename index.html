@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЗаявкаЗаМинуту — Формирование заявки за минуту</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Фиксированный Header -->
+    <header class="header fixed-header">
+        <div class="container header-container">
+            <div class="header-content">
+                <a href="index.html" class="logo-container">
+                    <div class="logo-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">ЗаявкаЗаМинуту</span>
+                </a>
+                <a href="calculate.html" class="try-button">Попробовать</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero-блок -->
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <svg class="hero-badge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(210, 100%, 50%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                    <span>Автоматизация формирования заявок</span>
+                </div>
+                <h1 class="hero-title">Заявка за минуту — от Excel до Telegram без лишних действий</h1>
+                <p class="hero-subtitle">Загрузите Excel-отчёт, укажите Telegram — получите готовую заявку по нашей формуле.</p>
+                <a href="calculate.html" class="cta-button hero-cta">
+                    Получить заявку за минуту
+                    <svg class="cta-button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="flow-animation">
+                    <div class="flow-step">
+                        <div class="flow-item excel-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(210, 100%, 50%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <path d="M14 2v6h6"/>
+                                <path d="M16 13H8"/>
+                                <path d="M16 17H8"/>
+                                <path d="M10 9H8"/>
+                            </svg>
+                        </div>
+                        <p class="flow-label">1. Загрузите Excel</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-item calc-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(265, 100%, 70%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                        </div>
+                        <p class="flow-label">2. Автоматический расчёт</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-item telegram-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(340, 82%, 52%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m22 2-7 20-4-9-9-4Z"/>
+                                <path d="M22 2 11 13"/>
+                            </svg>
+                        </div>
+                        <p class="flow-label">3. Получите в Telegram</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок боли -->
+    <section class="pain-section">
+        <div class="container">
+            <h2 class="section-title pain-title">Excel забирает часы. Ошибки стоят денег. Рутина замедляет продажи.</h2>
+            <div class="pain-cards">
+                <div class="pain-card">
+                    <div class="pain-icon-container">
+                        <svg class="pain-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(0, 84%, 60%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                            <path d="M14 2v6h6"/>
+                            <line x1="9" y1="12" x2="15" y2="12"/>
+                            <line x1="9" y1="16" x2="15" y2="16"/>
+                            <line x1="12" y1="9" x2="12" y2="19"/>
+                        </svg>
+                    </div>
+                    <p class="pain-text">Бесконечные файлы и ручной ввод тормозят процесс.</p>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-icon-container">
+                        <svg class="pain-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(0, 84%, 60%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
+                            <polyline points="16 17 22 17 22 11"/>
+                        </svg>
+                    </div>
+                    <p class="pain-text">Ошибки из-за усталости приводят к недозаказам.</p>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-icon-container">
+                        <svg class="pain-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(0, 84%, 60%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <p class="pain-text">У каждого сотрудника свой подход — заявки нестабильны.</p>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-icon-container">
+                        <svg class="pain-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(0, 84%, 60%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <p class="pain-text">Из-за задержек теряются продажи и темп бизнеса.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок "Как это работает" -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title how-it-works-title">Заявка за минуту — от Excel до Telegram без лишних действий</h2>
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-icon-container step-icon-1">
+                        <svg class="step-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(210, 100%, 50%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <p class="step-text">Загрузите Excel-файл с продажами.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon-container step-icon-2">
+                        <svg class="step-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(265, 100%, 70%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <p class="step-text">Укажите свой Telegram username.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon-container step-icon-3">
+                        <svg class="step-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(340, 82%, 52%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <p class="step-text">Нажмите на кнопку и перейдите в бота.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon-container step-icon-4">
+                        <svg class="step-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(142, 76%, 36%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <p class="step-text">Получите готовую заявку, сформированную автоматически.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок преимуществ (цифры) -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="section-title benefits-title">Автоматизация, которая меняет скорость работы</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon-container benefit-icon-1">
+                        <svg class="benefit-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-value">До 8 часов</div>
+                    <p class="benefit-text">экономии ежедневно</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon-container benefit-icon-2">
+                        <svg class="benefit-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-value">Менее 60 секунд</div>
+                    <p class="benefit-text">на формирование заявки</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon-container benefit-icon-3">
+                        <svg class="benefit-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-value">0 ручных операций</div>
+                    <p class="benefit-text">в процессе</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon-container benefit-icon-4">
+                        <svg class="benefit-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                            <polyline points="16 7 22 7 22 13"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-value">100% автоматизация</div>
+                    <p class="benefit-text">расчёта и формирования</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок сценариев использования -->
+    <section class="use-cases">
+        <div class="container">
+            <h2 class="section-title use-cases-title">Как компании используют наш сервис</h2>
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon-container">
+                        <svg class="use-case-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
+                            <path d="M2 7h20"/>
+                            <path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7"/>
+                        </svg>
+                    </div>
+                    <p class="use-case-text">Сети магазинов освобождают менеджеров от рутины.</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon-container">
+                        <svg class="use-case-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="8" cy="21" r="1"/>
+                            <circle cx="19" cy="21" r="1"/>
+                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                        </svg>
+                    </div>
+                    <p class="use-case-text">E-commerce ускоряет закупки и снижает ошибки.</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon-container">
+                        <svg class="use-case-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <p class="use-case-text">Торговые представители формируют заявки прямо с телефона.</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon-container">
+                        <svg class="use-case-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                            <polyline points="16 7 22 7 22 13"/>
+                        </svg>
+                    </div>
+                    <p class="use-case-text">Владельцы бизнеса получают стабильность и контроль над процессом.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок социального доказательства -->
+    <section class="social-proof">
+        <div class="container">
+            <div class="social-proof-card">
+                <div class="social-proof-stars">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="hsl(340, 82%, 52%)" stroke="hsl(340, 82%, 52%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="hsl(340, 82%, 52%)" stroke="hsl(340, 82%, 52%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="hsl(340, 82%, 52%)" stroke="hsl(340, 82%, 52%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="hsl(340, 82%, 52%)" stroke="hsl(340, 82%, 52%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="hsl(340, 82%, 52%)" stroke="hsl(340, 82%, 52%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </div>
+                <h2 class="social-proof-title">Скоро здесь появятся истории наших пользователей.</h2>
+                <p class="social-proof-text">Мы собираем первые кейсы и отзывы — скоро добавим их на страницу.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Финальный CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2 class="final-cta-title">Начните экономить время уже сегодня.</h2>
+            <a href="calculate.html" class="cta-button final-cta-button">
+                Получить заявку за минуту
+                <svg class="cta-button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Кнопка "Наверх" -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Вернуться наверх">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"/>
+        </svg>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
