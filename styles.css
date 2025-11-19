@@ -162,12 +162,12 @@ body {
     margin: 0 auto;
     text-align: center;
     position: relative;
-    z-index: 5;
+    z-index: 10;
 }
 
 .hero-content {
     position: relative;
-    z-index: 5;
+    z-index: 10;
 }
 
 .hero-badge {
@@ -233,12 +233,14 @@ body {
     gap: 8px;
     text-decoration: none;
     animation: fadeInUp 1s ease-out 0.5s both;
-    z-index: 10;
+    z-index: 20;
     pointer-events: auto;
 }
 
 .hero-cta {
     height: auto;
+    position: relative;
+    z-index: 20;
 }
 
 .cta-button::before {
@@ -268,7 +270,7 @@ body {
 .hero-visual {
     margin-top: 50px;
     position: relative;
-    z-index: 1;
+    z-index: 0;
     animation: fadeInUp 1s ease-out 0.7s both;
     pointer-events: none;
 }
