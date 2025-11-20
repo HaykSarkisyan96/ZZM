@@ -2827,6 +2827,95 @@ body {
     margin-top: 24px;
 }
 
+/* Manual Payment (Реквизиты) */
+.manual-payment {
+    margin-top: 24px;
+    padding: 24px;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.manual-payment-header {
+    margin-bottom: 20px;
+}
+
+.manual-payment-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.manual-payment-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.manual-payment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.manual-payment-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.manual-payment-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(26, 26, 46, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.manual-payment-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dark);
+    word-break: break-word;
+}
+
+.manual-payment-note {
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.manual-payment-note p {
+    font-size: 14px;
+    color: var(--text-dark);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.manual-payment-note a {
+    color: hsl(210, 100%, 50%);
+    text-decoration: underline;
+}
+
+.manual-payment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: hsl(210, 100%, 50%);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.manual-payment-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
 /* Responsive Design for Payment Page */
 @media (min-width: 1024px) {
     .payment-grid {

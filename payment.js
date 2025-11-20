@@ -4,6 +4,7 @@ const API_URL = 'https://new-landing-production.up.railway.app/api';
 // DOM элементы
 const tariffCards = document.querySelectorAll('.tariff-card');
 const paymentForm = document.getElementById('paymentForm');
+const telegramUsernameInput = document.getElementById('telegramUsername');
 const phoneInput = document.getElementById('phone');
 const selectedTariffField = document.getElementById('selectedTariffField');
 const selectedTariffName = document.getElementById('selectedTariffName');
@@ -15,9 +16,21 @@ const errorMessage = document.getElementById('errorMessage');
 const successAlert = document.getElementById('successAlert');
 const successMessage = document.getElementById('successMessage');
 const yookassaWidgetContainer = document.getElementById('yookassa-widget-container');
+const manualPaymentInfo = document.getElementById('manualPaymentInfo');
+const paymentPurpose = document.getElementById('paymentPurpose');
 
 // Выбранный тариф
 let selectedTariff = null;
+
+// Показ реквизитов для ручной оплаты
+function showManualPayment() {
+    if (selectedTariff) {
+        paymentPurpose.textContent = `Подписка "${selectedTariff.name}" на месяц - ${selectedTariff.price} ₽`;
+    }
+    manualPaymentInfo.style.display = 'block';
+    paymentForm.style.display = 'none';
+    manualPaymentInfo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 
 // Обработка выбора тарифа
 tariffCards.forEach(card => {
@@ -47,19 +60,32 @@ tariffCards.forEach(card => {
 
 // Обновление состояния кнопки оплаты
 function updatePaymentButton() {
-    const hasPhone = phoneInput.value.trim().length > 0;
+    const hasUsername = telegramUsernameInput.value.trim().length > 0;
     const hasTariff = selectedTariff !== null;
     
-    paymentButton.disabled = !hasPhone || !hasTariff;
+    paymentButton.disabled = !hasUsername || !hasTariff;
     
-    if (hasTariff && hasPhone) {
+    if (hasTariff && hasUsername) {
         paymentButtonText.textContent = `Оплатить ${selectedTariff.price} ₽`;
     } else if (hasTariff) {
-        paymentButtonText.textContent = 'Укажите номер телефона';
+        paymentButtonText.textContent = 'Укажите Telegram username';
     } else {
         paymentButtonText.textContent = 'Выберите тариф';
     }
 }
+
+// Обработка изменения Telegram username
+telegramUsernameInput.addEventListener('input', (e) => {
+    // Убираем @ если пользователь ввел
+    let value = e.target.value.trim();
+    if (value.startsWith('@')) {
+        value = value.substring(1);
+    }
+    e.target.value = value ? '@' + value : '';
+    
+    hideAlerts();
+    updatePaymentButton();
+});
 
 // Обработка изменения номера телефона
 phoneInput.addEventListener('input', (e) => {
@@ -88,7 +114,6 @@ phoneInput.addEventListener('input', (e) => {
     }
     
     hideAlerts();
-    updatePaymentButton();
 });
 
 // Скрытие алертов
@@ -123,17 +148,28 @@ paymentForm.addEventListener('submit', async (e) => {
         return;
     }
     
-    const phone = phoneInput.value.trim();
-    if (!phone) {
-        showError('Пожалуйста, укажите номер телефона');
+    const telegramUsername = telegramUsernameInput.value.trim();
+    if (!telegramUsername) {
+        showError('Пожалуйста, укажите Telegram username');
         return;
     }
     
-    // Нормализуем номер телефона (убираем все кроме цифр, начинаем с 7)
-    const normalizedPhone = phone.replace(/\D/g, '').replace(/^8/, '7');
-    if (!normalizedPhone.startsWith('7') || normalizedPhone.length !== 11) {
-        showError('Пожалуйста, укажите корректный номер телефона');
+    // Нормализуем username (убираем @ если есть, приводим к нижнему регистру)
+    const normalizedUsername = telegramUsername.replace('@', '').toLowerCase();
+    if (normalizedUsername.length < 3) {
+        showError('Пожалуйста, укажите корректный Telegram username');
         return;
+    }
+    
+    // Нормализуем номер телефона (если указан)
+    let normalizedPhone = null;
+    const phone = phoneInput.value.trim();
+    if (phone) {
+        normalizedPhone = phone.replace(/\D/g, '').replace(/^8/, '7');
+        if (!normalizedPhone.startsWith('7') || normalizedPhone.length !== 11) {
+            showError('Пожалуйста, укажите корректный номер телефона или оставьте поле пустым');
+            return;
+        }
     }
     
     // Показываем состояние загрузки
@@ -151,6 +187,7 @@ paymentForm.addEventListener('submit', async (e) => {
                 tariff: selectedTariff.id,
                 tariff_name: selectedTariff.name,
                 price: selectedTariff.price,
+                telegram_username: normalizedUsername,
                 phone: normalizedPhone
             })
         });
@@ -158,25 +195,43 @@ paymentForm.addEventListener('submit', async (e) => {
         const data = await response.json();
         
         if (response.ok && data.success) {
-            // Инициализируем виджет ЮKassa
-            const checkout = new window.YooMoneyCheckoutWidget({
-                confirmation_token: data.confirmation_token,
-                return_url: window.location.origin + '/payment-success.html',
-                error_callback: function(error) {
-                    showError('Ошибка при инициализации платежа. Попробуйте еще раз.');
+            // Проверяем, есть ли настоящий confirmation_token (не тестовый)
+            if (data.confirmation_token && !data.confirmation_token.startsWith('test_token_')) {
+                // Инициализируем виджет ЮKassa
+                try {
+                    const checkout = new window.YooMoneyCheckoutWidget({
+                        confirmation_token: data.confirmation_token,
+                        return_url: window.location.origin + '/payment-success.html',
+                        error_callback: function(error) {
+                            console.error('YooMoney widget error:', error);
+                            showError('Ошибка при инициализации платежа. Попробуйте еще раз или используйте оплату по реквизитам.');
+                            showManualPayment();
+                            paymentButton.disabled = false;
+                            updatePaymentButton();
+                        }
+                    });
+                    
+                    // Отображаем виджет
+                    checkout.render('yookassa-widget-container');
+                    yookassaWidgetContainer.style.display = 'block';
+                    paymentForm.style.display = 'none';
+                    
+                    // Прокручиваем к виджету
+                    yookassaWidgetContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } catch (error) {
+                    console.error('Error initializing YooMoney widget:', error);
+                    showError('Не удалось загрузить форму оплаты. Используйте оплату по реквизитам.');
+                    showManualPayment();
                     paymentButton.disabled = false;
                     updatePaymentButton();
                 }
-            });
-            
-            // Отображаем виджет
-            checkout.render('yookassa-widget-container');
-            yookassaWidgetContainer.style.display = 'block';
-            paymentForm.style.display = 'none';
-            
-            // Прокручиваем к виджету
-            yookassaWidgetContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            
+            } else {
+                // Тестовый режим или ключи не настроены - показываем реквизиты
+                showError('Автоматическая оплата временно недоступна. Используйте оплату по реквизитам.');
+                showManualPayment();
+                paymentButton.disabled = false;
+                updatePaymentButton();
+            }
         } else {
             const errorMsg = data.error || data.message || 'Ошибка при создании платежа';
             showError(errorMsg);

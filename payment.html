@@ -109,10 +109,33 @@
                     <div class="payment-card">
                         <h2 class="payment-section-title">Данные для оплаты</h2>
                         <form id="paymentForm" class="payment-form">
-                            <!-- Поле номера телефона -->
+                            <!-- Поле Telegram username -->
+                            <div class="form-field">
+                                <label for="telegramUsername" class="form-label">
+                                    Telegram username
+                                </label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m22 2-7 20-4-9-9-4Z"/>
+                                        <path d="M22 2 11 13"/>
+                                    </svg>
+                                    <input
+                                        type="text"
+                                        id="telegramUsername"
+                                        name="telegramUsername"
+                                        placeholder="@username"
+                                        class="form-input"
+                                        required
+                                        autocomplete="username"
+                                    />
+                                </div>
+                                <p class="form-hint">На этот username мы отправим уведомление об успешной оплате</p>
+                            </div>
+
+                            <!-- Поле номера телефона (опционально) -->
                             <div class="form-field">
                                 <label for="phone" class="form-label">
-                                    Номер телефона
+                                    Номер телефона <span class="form-label-optional">(необязательно)</span>
                                 </label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -124,11 +147,10 @@
                                         name="phone"
                                         placeholder="+7 (999) 123-45-67"
                                         class="form-input"
-                                        required
                                         autocomplete="tel"
                                     />
                                 </div>
-                                <p class="form-hint">Номер телефона будет использован для активации подписки</p>
+                                <p class="form-hint">Номер телефона используется для дополнительной идентификации</p>
                             </div>
 
                             <!-- Выбранный тариф -->
@@ -167,6 +189,48 @@
 
                         <!-- Контейнер для виджета ЮKassa -->
                         <div id="yookassa-widget-container" style="display: none;"></div>
+                        
+                        <!-- Альтернативный способ оплаты (реквизиты) -->
+                        <div id="manualPaymentInfo" style="display: none;" class="manual-payment">
+                            <div class="manual-payment-header">
+                                <h3 class="manual-payment-title">Оплата по реквизитам</h3>
+                                <p class="manual-payment-text">Если автоматическая оплата недоступна, вы можете оплатить по реквизитам:</p>
+                            </div>
+                            <div class="manual-payment-details">
+                                <div class="manual-payment-item">
+                                    <span class="manual-payment-label">Получатель:</span>
+                                    <span class="manual-payment-value">Саркисян Айк Юрьевич</span>
+                                </div>
+                                <div class="manual-payment-item">
+                                    <span class="manual-payment-label">ИНН:</span>
+                                    <span class="manual-payment-value">910703559058</span>
+                                </div>
+                                <div class="manual-payment-item">
+                                    <span class="manual-payment-label">Расчетный счет:</span>
+                                    <span class="manual-payment-value">40802810552000105175</span>
+                                </div>
+                                <div class="manual-payment-item">
+                                    <span class="manual-payment-label">БИК:</span>
+                                    <span class="manual-payment-value">046015602</span>
+                                </div>
+                                <div class="manual-payment-item">
+                                    <span class="manual-payment-label">Банк:</span>
+                                    <span class="manual-payment-value">ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК</span>
+                                </div>
+                                <div class="manual-payment-item">
+                                    <span class="manual-payment-label">Корр. счет:</span>
+                                    <span class="manual-payment-value">30101810600000000602</span>
+                                </div>
+                                <div class="manual-payment-item">
+                                    <span class="manual-payment-label">Назначение платежа:</span>
+                                    <span class="manual-payment-value" id="paymentPurpose">Подписка на месяц</span>
+                                </div>
+                            </div>
+                            <div class="manual-payment-note">
+                                <p>После оплаты отправьте скриншот перевода в <a href="https://t.me/HaykSarkisyan" target="_blank">Telegram</a> для активации подписки.</p>
+                            </div>
+                            <a href="requisites.html" target="_blank" class="manual-payment-link">Полные реквизиты →</a>
+                        </div>
                     </div>
                 </div>
             </div>
