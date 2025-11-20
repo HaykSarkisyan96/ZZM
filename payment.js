@@ -45,8 +45,10 @@ tariffCards.forEach(card => {
         selectedTariff = {
             id: card.dataset.tariff,
             name: card.dataset.name,
-            price: parseInt(card.dataset.price)
+            price: parseInt(card.dataset.price, 10)  // Явно указываем основание 10
         };
+        
+        console.log('Выбран тариф:', selectedTariff);
         
         // Показываем выбранный тариф в форме
         selectedTariffName.textContent = selectedTariff.name;
@@ -177,22 +179,36 @@ paymentForm.addEventListener('submit', async (e) => {
     paymentButtonText.textContent = 'Создание платежа...';
     
     try {
+        // Подготавливаем данные для отправки
+        const paymentData = {
+            tariff: selectedTariff.id,
+            tariff_name: selectedTariff.name,
+            price: Number(selectedTariff.price),  // Убеждаемся, что это число
+            telegram_username: normalizedUsername,
+            phone: normalizedPhone || null  // Отправляем null вместо пустой строки
+        };
+        
+        console.log('Отправляем данные:', paymentData);
+        console.log('Типы данных:', {
+            tariff: typeof paymentData.tariff,
+            tariff_name: typeof paymentData.tariff_name,
+            price: typeof paymentData.price,
+            telegram_username: typeof paymentData.telegram_username
+        });
+        
         // Создаем платеж через API
         const response = await fetch(`${API_URL}/create_payment`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                tariff: selectedTariff.id,
-                tariff_name: selectedTariff.name,
-                price: selectedTariff.price,
-                telegram_username: normalizedUsername,
-                phone: normalizedPhone
-            })
+            body: JSON.stringify(paymentData)
         });
         
+        console.log('Ответ сервера:', response.status, response.statusText);
+        
         const data = await response.json();
+        console.log('Данные ответа:', data);
         
         if (response.ok && data.success) {
             // Проверяем, есть ли настоящий confirmation_token (не тестовый)
