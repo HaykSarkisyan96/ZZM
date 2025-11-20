@@ -928,6 +928,114 @@ body {
     flex-shrink: 0;
 }
 
+/* Contacts Section */
+.contacts-section {
+    padding: 96px 0;
+    background: linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(265, 100%, 95%) 50%, hsl(340, 82%, 95%) 100%);
+}
+
+.contacts-section .container {
+    max-width: 896px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.contacts-title {
+    font-size: 48px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+    letter-spacing: -1.5px;
+    line-height: 1.2;
+}
+
+.contacts-subtitle {
+    font-size: 18px;
+    color: rgba(26, 26, 46, 0.7);
+    text-align: center;
+    margin-bottom: 64px;
+    line-height: 1.6;
+}
+
+.contacts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+.contact-card {
+    background: var(--bg-white);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.contact-icon-container {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.contact-icon-phone {
+    background: linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(210, 100%, 50%, 0.7) 100%);
+}
+
+.contact-icon-telegram {
+    background: linear-gradient(135deg, hsl(200, 100%, 50%) 0%, hsl(200, 100%, 50%, 0.7) 100%);
+}
+
+.contact-icon-whatsapp {
+    background: linear-gradient(135deg, hsl(142, 76%, 36%) 0%, hsl(142, 76%, 36%, 0.7) 100%);
+}
+
+.contact-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.contact-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.contact-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.contact-description {
+    font-size: 14px;
+    color: rgba(26, 26, 46, 0.6);
+    margin: 0;
+    line-height: 1.5;
+}
+
 /* Final CTA */
 .final-cta {
     padding: 96px 0;
@@ -1046,6 +1154,11 @@ body {
         grid-template-columns: repeat(2, 1fr);
         gap: 24px;
     }
+    
+    .contacts-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
 }
 
 @media (min-width: 768px) {
@@ -1064,6 +1177,11 @@ body {
     }
     
     .pricing-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+    
+    .contacts-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 24px;
     }
@@ -1294,6 +1412,46 @@ body {
     .pricing-button {
         padding: 16px 20px;
         font-size: 15px;
+    }
+    
+    .contacts-section {
+        padding: 48px 0;
+    }
+    
+    .contacts-title {
+        font-size: 28px;
+        margin-bottom: 12px;
+    }
+    
+    .contacts-subtitle {
+        font-size: 15px;
+        margin-bottom: 32px;
+    }
+    
+    .contact-card {
+        padding: 20px;
+    }
+    
+    .contact-icon-container {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .contact-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .contact-title {
+        font-size: 16px;
+    }
+    
+    .contact-value {
+        font-size: 15px;
+    }
+    
+    .contact-description {
+        font-size: 12px;
     }
     
     .final-cta-button {
@@ -1566,6 +1724,46 @@ body {
     .pricing-button {
         padding: 16px 24px;
         font-size: 16px;
+    }
+    
+    .contacts-section {
+        padding: 64px 0;
+    }
+    
+    .contacts-title {
+        font-size: 36px;
+        margin-bottom: 12px;
+    }
+    
+    .contacts-subtitle {
+        font-size: 16px;
+        margin-bottom: 48px;
+    }
+    
+    .contact-card {
+        padding: 24px;
+    }
+    
+    .contact-icon-container {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .contact-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .contact-title {
+        font-size: 18px;
+    }
+    
+    .contact-value {
+        font-size: 16px;
+    }
+    
+    .contact-description {
+        font-size: 13px;
     }
     
     /* Улучшения для карточек на мобильных */
