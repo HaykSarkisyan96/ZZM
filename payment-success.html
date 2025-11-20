@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Оплата успешна — ЗаявкаЗаМинуту</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Фиксированный Header -->
+    <header class="header fixed-header">
+        <div class="container header-container">
+            <div class="header-content">
+                <a href="index.html" class="logo-container">
+                    <div class="logo-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">ЗаявкаЗаМинуту</span>
+                </a>
+                <nav class="header-nav">
+                    <a href="index.html#main" class="nav-link">Главная</a>
+                    <a href="index.html#how-it-works" class="nav-link">Как это работает</a>
+                    <a href="index.html#reviews" class="nav-link">Отзывы</a>
+                    <a href="index.html#pricing" class="nav-link">Тарифы</a>
+                    <a href="index.html#contacts" class="nav-link">Контакты</a>
+                </nav>
+                <a href="calculate.html" class="try-button">Попробовать</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="payment-success-page">
+        <div class="container payment-success-container">
+            <div class="payment-success-card">
+                <div class="payment-success-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="hsl(142, 76%, 36%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <h1 class="payment-success-title">Оплата успешна!</h1>
+                <p class="payment-success-text">
+                    Ваша подписка активирована. Теперь вы можете использовать сервис для формирования заявок.
+                </p>
+                <div class="payment-success-actions">
+                    <a href="calculate.html" class="payment-success-button">
+                        Начать использовать
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                    <a href="index.html" class="payment-success-link">
+                        Вернуться на главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

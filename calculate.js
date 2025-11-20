@@ -17,6 +17,7 @@ const fileName = document.getElementById('fileName');
 const fileRemove = document.getElementById('fileRemove');
 const usernameInput = document.getElementById('username');
 const storeNameInput = document.getElementById('storeName');
+const phoneInput = document.getElementById('phone');
 const submitButton = document.getElementById('submitButton');
 const submitLoader = document.getElementById('submitLoader');
 const submitButtonText = document.getElementById('submitButtonText');
@@ -73,7 +74,7 @@ function updateSubmitButton() {
 
 // Показываем ошибку
 function showError(message) {
-    errorMessage.textContent = message;
+    errorMessage.innerHTML = message;  // Используем innerHTML для поддержки HTML ссылок
     errorAlert.style.display = 'flex';
     successAlert.style.display = 'none';
     // Прокручиваем к ошибке
@@ -81,22 +82,44 @@ function showError(message) {
 }
 
 // Показываем успех
-function showSuccess(message, botLink, botUsername) {
-    const messageHTML = `
-        <span style="font-weight: 600;">✅ Заявка готова!</span><br>
-        <span>
-            Напишите боту 
-            <a href="${botLink}" target="_blank" rel="noopener noreferrer">
-                @${botUsername}
-                <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    <polyline points="15 3 21 3 21 9"/>
-                    <line x1="10" y1="14" x2="21" y2="3"/>
-                </svg>
-            </a>
-            команду /start, и вы получите заявку автоматически.
-        </span>
-    `;
+function showSuccess(message, botLink, botUsername, autoSent = false) {
+    let messageHTML;
+    
+    if (autoSent) {
+        // Заявка отправлена автоматически (повторное использование)
+        messageHTML = `
+            <span style="font-weight: 600;">✅ Заявка успешно отправлена в Telegram!</span><br>
+            <span>
+                Проверьте свой Telegram — заявка уже пришла. 
+                <a href="${botLink}" target="_blank" rel="noopener noreferrer">
+                    Открыть бота
+                    <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                </a>
+            </span>
+        `;
+    } else {
+        // Первое использование - нужно написать /start
+        messageHTML = `
+            <span style="font-weight: 600;">✅ Заявка готова!</span><br>
+            <span>
+                Напишите боту 
+                <a href="${botLink}" target="_blank" rel="noopener noreferrer">
+                    @${botUsername}
+                    <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                </a>
+                команду /start, и вы получите заявку автоматически.
+            </span>
+        `;
+    }
+    
     successMessage.innerHTML = messageHTML;
     successAlert.style.display = 'flex';
     errorAlert.style.display = 'none';
@@ -223,6 +246,11 @@ form.addEventListener('submit', async (e) => {
             formData.append('store_name', storeName);
         }
         
+        const phone = phoneInput ? phoneInput.value.trim() : '';
+        if (phone) {
+            formData.append('phone', phone);
+        }
+        
         // Отправляем запрос
         const response = await fetch(API_URL, {
             method: 'POST',
@@ -241,10 +269,12 @@ form.addEventListener('submit', async (e) => {
         
         if (response.ok && data.success) {
             // Успех
+            const autoSent = data.auto_sent === true;  // Проверяем, была ли заявка отправлена автоматически
             showSuccess(
                 data.message,
                 data.bot_link || `https://t.me/${data.bot_username || 'ваш_бот'}`,
-                data.bot_username || 'ваш_бот'
+                data.bot_username || 'ваш_бот',
+                autoSent
             );
             
             // Очищаем файл
@@ -255,7 +285,13 @@ form.addEventListener('submit', async (e) => {
         } else {
             // Ошибка от API
             const errorMsg = data.error || data.message || 'Произошла ошибка при обработке файла';
-            showError(errorMsg);
+            
+            // Если требуется подписка, показываем ссылку на оплату
+            if (data.requires_subscription && data.payment_link) {
+                showError(`${errorMsg}<br><br><a href="${data.payment_link}" target="_blank" style="color: hsl(210, 100%, 50%); text-decoration: underline;">Оформить подписку →</a>`);
+            } else {
+                showError(errorMsg);
+            }
         }
     } catch (error) {
         console.error('Error:', error);

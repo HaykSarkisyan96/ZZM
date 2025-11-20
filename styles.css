@@ -2433,3 +2433,630 @@ body {
     }
 }
 
+/* Requisites Page Styles */
+.requisites-page {
+    min-height: 100vh;
+    background: var(--gradient-hero);
+    padding-top: 96px;
+    padding-bottom: 64px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.requisites-container {
+    max-width: 896px;
+    margin: 0 auto;
+}
+
+.requisites-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.requisites-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+
+.requisites-subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.requisites-card {
+    background: var(--bg-white);
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 32px;
+}
+
+.requisites-section {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.requisites-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.requisites-section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+}
+
+.requisites-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.requisites-item:last-child {
+    margin-bottom: 0;
+}
+
+.requisites-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(26, 26, 46, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.requisites-value {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.requisites-link {
+    color: hsl(210, 100%, 50%);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.requisites-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+.requisites-footer {
+    text-align: center;
+}
+
+.requisites-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.requisites-back-link:hover {
+    opacity: 0.8;
+}
+
+.requisites-back-link svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Responsive Design for Requisites Page */
+@media (max-width: 768px) {
+    .requisites-page {
+        padding-top: 80px;
+        padding-bottom: 48px;
+    }
+    
+    .requisites-header {
+        margin-bottom: 32px;
+    }
+    
+    .requisites-title {
+        font-size: 32px;
+    }
+    
+    .requisites-subtitle {
+        font-size: 16px;
+    }
+    
+    .requisites-card {
+        padding: 32px 24px;
+        border-radius: 20px;
+    }
+    
+    .requisites-section {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+    }
+    
+    .requisites-section-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+    
+    .requisites-value {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .requisites-title {
+        font-size: 28px;
+    }
+    
+    .requisites-card {
+        padding: 24px 20px;
+    }
+    
+    .requisites-section-title {
+        font-size: 18px;
+    }
+    
+    .requisites-value {
+        font-size: 15px;
+    }
+}
+
+/* Payment Page Styles */
+.payment-page {
+    min-height: 100vh;
+    background: var(--gradient-hero);
+    padding-top: 96px;
+    padding-bottom: 64px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.payment-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.payment-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+
+.payment-subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.payment-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+.payment-tariffs {
+    grid-column: 1;
+}
+
+.payment-section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
+
+.tariff-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.tariff-card {
+    background: var(--bg-white);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.tariff-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.tariff-card.selected {
+    border-color: hsl(210, 100%, 50%);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+}
+
+.tariff-card-header {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tariff-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.tariff-price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.tariff-amount {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.tariff-currency {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.tariff-period {
+    font-size: 16px;
+    color: rgba(26, 26, 46, 0.6);
+    margin-left: 4px;
+}
+
+.tariff-features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tariff-feature {
+    font-size: 14px;
+    color: rgba(26, 26, 46, 0.8);
+    line-height: 1.5;
+}
+
+.payment-form-wrapper {
+    grid-column: 1;
+}
+
+.payment-card {
+    background: var(--bg-white);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: var(--shadow-soft);
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.selected-tariff {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.selected-tariff-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.selected-tariff-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: hsl(210, 100%, 50%);
+}
+
+.payment-button {
+    width: 100%;
+    height: 56px;
+    background: var(--gradient-cta);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.payment-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-strong);
+}
+
+.payment-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.payment-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#yookassa-widget-container {
+    margin-top: 24px;
+}
+
+/* Responsive Design for Payment Page */
+@media (min-width: 1024px) {
+    .payment-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+    }
+    
+    .payment-tariffs {
+        grid-column: 1;
+    }
+    
+    .payment-form-wrapper {
+        grid-column: 2;
+    }
+    
+    .tariff-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .payment-page {
+        padding-top: 80px;
+        padding-bottom: 48px;
+    }
+    
+    .payment-header {
+        margin-bottom: 32px;
+    }
+    
+    .payment-title {
+        font-size: 32px;
+    }
+    
+    .payment-subtitle {
+        font-size: 16px;
+    }
+    
+    .payment-card {
+        padding: 24px;
+    }
+    
+    .tariff-card {
+        padding: 20px;
+    }
+    
+    .tariff-amount {
+        font-size: 28px;
+    }
+    
+    .tariff-currency {
+        font-size: 20px;
+    }
+    
+    .payment-button {
+        height: 52px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-title {
+        font-size: 28px;
+    }
+    
+    .payment-card {
+        padding: 20px;
+    }
+    
+    .tariff-card {
+        padding: 16px;
+    }
+    
+    .tariff-name {
+        font-size: 18px;
+    }
+    
+    .tariff-amount {
+        font-size: 24px;
+    }
+}
+
+/* Payment Success Page Styles */
+.payment-success-page {
+    min-height: 100vh;
+    background: var(--gradient-hero);
+    padding-top: 96px;
+    padding-bottom: 64px;
+    padding-left: 16px;
+    padding-right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-success-container {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.payment-success-card {
+    background: var(--bg-white);
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+}
+
+.payment-success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 50%;
+}
+
+.payment-success-icon svg {
+    width: 64px;
+    height: 64px;
+}
+
+.payment-success-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+}
+
+.payment-success-text {
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.payment-success-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.payment-success-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gradient-cta);
+    color: white;
+    padding: 18px 32px;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-medium);
+}
+
+.payment-success-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-strong);
+}
+
+.payment-success-button svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.payment-success-link {
+    font-size: 16px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.payment-success-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* Responsive Design for Payment Success Page */
+@media (max-width: 768px) {
+    .payment-success-page {
+        padding-top: 80px;
+        padding-bottom: 48px;
+    }
+    
+    .payment-success-card {
+        padding: 32px 24px;
+    }
+    
+    .payment-success-title {
+        font-size: 28px;
+    }
+    
+    .payment-success-text {
+        font-size: 16px;
+    }
+    
+    .payment-success-button {
+        padding: 16px 24px;
+        font-size: 16px;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-success-card {
+        padding: 24px 20px;
+    }
+    
+    .payment-success-title {
+        font-size: 24px;
+    }
+    
+    .payment-success-icon {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .payment-success-icon svg {
+        width: 48px;
+        height: 48px;
+    }
+}
+

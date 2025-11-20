@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Оплата подписки — ЗаявкаЗаМинуту</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- ЮKassa виджет -->
+    <script src="https://yookassa.ru/checkout-widget/v1/checkout-widget.js"></script>
+</head>
+<body>
+    <!-- Фиксированный Header -->
+    <header class="header fixed-header">
+        <div class="container header-container">
+            <div class="header-content">
+                <a href="index.html" class="logo-container">
+                    <div class="logo-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">ЗаявкаЗаМинуту</span>
+                </a>
+                <nav class="header-nav">
+                    <a href="index.html#main" class="nav-link">Главная</a>
+                    <a href="index.html#how-it-works" class="nav-link">Как это работает</a>
+                    <a href="index.html#reviews" class="nav-link">Отзывы</a>
+                    <a href="index.html#pricing" class="nav-link">Тарифы</a>
+                    <a href="index.html#contacts" class="nav-link">Контакты</a>
+                </nav>
+                <a href="calculate.html" class="try-button">Попробовать</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="payment-page">
+        <div class="container payment-container">
+            <!-- Заголовок страницы -->
+            <div class="payment-header">
+                <h1 class="payment-title">Оплата подписки</h1>
+                <p class="payment-subtitle">Выберите тариф и укажите номер телефона для активации подписки</p>
+            </div>
+
+            <!-- Сетка: выбор тарифа и форма оплаты -->
+            <div class="payment-grid">
+                <!-- Выбор тарифа (левая часть) -->
+                <div class="payment-tariffs">
+                    <h2 class="payment-section-title">Выберите тариф</h2>
+                    <div class="tariff-cards">
+                        <div class="tariff-card" data-tariff="start" data-price="490" data-name="Старт">
+                            <div class="tariff-card-header">
+                                <h3 class="tariff-name">Старт</h3>
+                                <div class="tariff-price">
+                                    <span class="tariff-amount">490</span>
+                                    <span class="tariff-currency">₽</span>
+                                    <span class="tariff-period">/месяц</span>
+                                </div>
+                            </div>
+                            <div class="tariff-features">
+                                <div class="tariff-feature">До 300 заявок в месяц</div>
+                                <div class="tariff-feature">Автоматическая отправка в Telegram</div>
+                                <div class="tariff-feature">Поддержка всех форматов Excel</div>
+                                <div class="tariff-feature">Техподдержка</div>
+                            </div>
+                        </div>
+
+                        <div class="tariff-card" data-tariff="business" data-price="990" data-name="Бизнес">
+                            <div class="tariff-card-header">
+                                <h3 class="tariff-name">Бизнес</h3>
+                                <div class="tariff-price">
+                                    <span class="tariff-amount">990</span>
+                                    <span class="tariff-currency">₽</span>
+                                    <span class="tariff-period">/месяц</span>
+                                </div>
+                            </div>
+                            <div class="tariff-features">
+                                <div class="tariff-feature">До 1000 заявок в месяц</div>
+                                <div class="tariff-feature">Автоматическая отправка в Telegram</div>
+                                <div class="tariff-feature">Поддержка всех форматов Excel</div>
+                                <div class="tariff-feature">Техподдержка</div>
+                            </div>
+                        </div>
+
+                        <div class="tariff-card" data-tariff="pro" data-price="1490" data-name="Про">
+                            <div class="tariff-card-header">
+                                <h3 class="tariff-name">Про</h3>
+                                <div class="tariff-price">
+                                    <span class="tariff-amount">1490</span>
+                                    <span class="tariff-currency">₽</span>
+                                    <span class="tariff-period">/месяц</span>
+                                </div>
+                            </div>
+                            <div class="tariff-features">
+                                <div class="tariff-feature">Неограниченное количество заявок в месяц</div>
+                                <div class="tariff-feature">Автоматическая отправка в Telegram</div>
+                                <div class="tariff-feature">Поддержка всех форматов Excel</div>
+                                <div class="tariff-feature">Техподдержка</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Форма оплаты (правая часть) -->
+                <div class="payment-form-wrapper">
+                    <div class="payment-card">
+                        <h2 class="payment-section-title">Данные для оплаты</h2>
+                        <form id="paymentForm" class="payment-form">
+                            <!-- Поле номера телефона -->
+                            <div class="form-field">
+                                <label for="phone" class="form-label">
+                                    Номер телефона
+                                </label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                    </svg>
+                                    <input
+                                        type="tel"
+                                        id="phone"
+                                        name="phone"
+                                        placeholder="+7 (999) 123-45-67"
+                                        class="form-input"
+                                        required
+                                        autocomplete="tel"
+                                    />
+                                </div>
+                                <p class="form-hint">Номер телефона будет использован для активации подписки</p>
+                            </div>
+
+                            <!-- Выбранный тариф -->
+                            <div class="form-field" id="selectedTariffField" style="display: none;">
+                                <label class="form-label">Выбранный тариф</label>
+                                <div class="selected-tariff">
+                                    <span class="selected-tariff-name" id="selectedTariffName"></span>
+                                    <span class="selected-tariff-price" id="selectedTariffPrice"></span>
+                                </div>
+                            </div>
+
+                            <!-- Alert ошибки -->
+                            <div class="alert alert-error" id="errorAlert" style="display: none;">
+                                <svg class="alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                                <span class="alert-message" id="errorMessage"></span>
+                            </div>
+
+                            <!-- Alert успеха -->
+                            <div class="alert alert-success" id="successAlert" style="display: none;">
+                                <svg class="alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                <div class="alert-message" id="successMessage"></div>
+                            </div>
+
+                            <!-- Кнопка оплаты -->
+                            <button type="submit" class="payment-button" id="paymentButton" disabled>
+                                <span id="paymentButtonText">Выберите тариф</span>
+                            </button>
+                        </form>
+
+                        <!-- Контейнер для виджета ЮKassa -->
+                        <div id="yookassa-widget-container" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="payment.js"></script>
+</body>
+</html>
+
