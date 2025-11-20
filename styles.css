@@ -43,6 +43,31 @@ body {
     background: var(--bg-light);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Улучшение touch-таргетов для мобильных */
+@media (max-width: 768px) {
+    button,
+    a,
+    input[type="submit"],
+    input[type="button"],
+    .cta-button,
+    .try-button,
+    .submit-button {
+        min-height: 44px; /* Минимальный размер для удобного нажатия */
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Улучшение читаемости на мобильных */
+    p, span, li {
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
 }
 
 .container {
@@ -207,10 +232,49 @@ body {
     font-size: 20px;
     font-weight: 400;
     color: rgba(26, 26, 46, 0.8);
-    margin: 0 auto 48px;
+    margin: 0 auto 32px;
     line-height: 1.6;
     max-width: 672px;
     animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.hero-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 24px auto 32px;
+    max-width: 672px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.hero-benefit-item {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(26, 26, 46, 0.7);
+    line-height: 1.5;
+    padding-left: 24px;
+    position: relative;
+}
+
+.hero-benefit-item::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: hsl(210, 100%, 50%);
+    font-size: 20px;
+    line-height: 1;
+}
+
+.hero-trust {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(26, 26, 46, 0.6);
+    margin: 32px auto 0;
+    max-width: 672px;
+    line-height: 1.5;
+    animation: fadeInUp 1s ease-out 0.7s both;
 }
 
 .cta-button {
@@ -831,10 +895,212 @@ body {
     }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive - Mobile First Approach */
+/* Очень маленькие экраны (320px - 480px) */
+@media (max-width: 480px) {
     .header-container {
-        padding: 16px;
+        padding: 12px 16px;
+    }
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .logo-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .try-button {
+        padding: 0 16px;
+        height: 40px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
+    
+    .hero {
+        padding: 80px 12px 48px;
+        min-height: auto;
+    }
+    
+    .hero-badge {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin-bottom: 24px;
+    }
+    
+    .hero-title {
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        margin-bottom: 16px;
+        line-height: 1.2;
+    }
+    
+    .hero-subtitle {
+        font-size: 16px;
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+    
+    .cta-button {
+        padding: 18px 24px;
+        font-size: 16px;
+        border-radius: 12px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .hero-benefits {
+        margin: 20px auto 24px;
+        gap: 10px;
+    }
+    
+    .hero-benefit-item {
+        font-size: 14px;
+        padding-left: 20px;
+    }
+    
+    .hero-benefit-item::before {
+        font-size: 18px;
+    }
+    
+    .hero-trust {
+        font-size: 12px;
+        margin: 24px auto 0;
+    }
+    
+    .flow-animation {
+        gap: 16px;
+        margin-top: 32px;
+    }
+    
+    .flow-item {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .flow-item svg {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .flow-label {
+        font-size: 12px;
+        max-width: 100px;
+    }
+    
+    .section-title,
+    .pain-title,
+    .how-it-works-title,
+    .benefits-title,
+    .use-cases-title {
+        font-size: 28px;
+        margin-bottom: 32px;
+        line-height: 1.3;
+    }
+    
+    .final-cta-title {
+        font-size: 28px;
+        margin-bottom: 24px;
+    }
+    
+    .container {
+        padding: 0 16px;
+    }
+    
+    .pain-section,
+    .how-it-works,
+    .benefits-section,
+    .use-cases,
+    .social-proof,
+    .final-cta {
+        padding: 48px 0;
+    }
+    
+    .pain-card,
+    .step-card,
+    .benefit-card,
+    .use-case-card {
+        padding: 24px;
+        border-radius: 20px;
+    }
+    
+    .pain-icon-container,
+    .step-icon-container,
+    .benefit-icon-container {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+    }
+    
+    .pain-icon,
+    .step-icon,
+    .benefit-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .pain-text,
+    .step-text,
+    .use-case-text {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    
+    .benefit-value {
+        font-size: 24px;
+    }
+    
+    .benefit-text {
+        font-size: 14px;
+    }
+    
+    .use-case-icon-container {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .use-case-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .social-proof-card {
+        padding: 32px 20px;
+    }
+    
+    .social-proof-title {
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+    
+    .social-proof-text {
+        font-size: 16px;
+    }
+    
+    .social-proof-stars svg {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .final-cta-button {
+        padding: 18px 24px;
+        font-size: 16px;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Средние мобильные экраны (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .header-container {
+        padding: 14px 20px;
     }
     
     .logo-text {
@@ -861,6 +1127,8 @@ body {
     
     .hero {
         padding-top: 80px;
+        padding-left: 20px;
+        padding-right: 20px;
     }
     
     .hero-content {
@@ -874,7 +1142,27 @@ body {
     }
     
     .hero-subtitle {
-        font-size: 20px;
+        font-size: 18px;
+        margin-bottom: 28px;
+    }
+    
+    .cta-button {
+        padding: 20px 28px;
+        font-size: 17px;
+    }
+    
+    .hero-benefits {
+        margin: 22px auto 28px;
+        gap: 11px;
+    }
+    
+    .hero-benefit-item {
+        font-size: 15px;
+    }
+    
+    .hero-trust {
+        font-size: 13px;
+        margin: 28px auto 0;
     }
     
     .flow-animation {
@@ -897,9 +1185,114 @@ body {
         max-width: 120px;
     }
     
-    .flow-arrow {
-        font-size: 24px;
-        margin-top: 30px;
+    .section-title,
+    .pain-title,
+    .how-it-works-title,
+    .benefits-title,
+    .use-cases-title {
+        font-size: 36px;
+    }
+    
+    .final-cta-title {
+        font-size: 40px;
+    }
+    
+    .container {
+        padding: 0 20px;
+    }
+    
+    .pain-section,
+    .how-it-works,
+    .benefits-section,
+    .use-cases,
+    .social-proof,
+    .final-cta {
+        padding: 64px 0;
+    }
+}
+
+/* Общие мобильные стили (до 768px) */
+@media (max-width: 768px) {
+    .header-container {
+        padding: 12px 16px;
+    }
+    
+    .logo-text {
+        font-size: 17px;
+    }
+    
+    .logo-icon {
+        width: 34px;
+        height: 34px;
+    }
+    
+    .logo-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+    
+    .try-button {
+        padding: 0 20px;
+        height: 42px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 8px;
+    }
+    
+    .hero {
+        padding-top: 80px;
+        padding-bottom: 48px;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+    }
+    
+    .hero-title {
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -1.2px;
+        line-height: 1.2;
+    }
+    
+    .hero-subtitle {
+        font-size: 17px;
+        line-height: 1.5;
+        margin-bottom: 28px;
+    }
+    
+    .hero-benefits {
+        margin: 22px auto 28px;
+        gap: 11px;
+    }
+    
+    .hero-benefit-item {
+        font-size: 15px;
+    }
+    
+    .hero-trust {
+        font-size: 13px;
+        margin: 28px auto 0;
+    }
+    
+    .flow-animation {
+        gap: 18px;
+    }
+    
+    .flow-item {
+        width: 60px;
+        height: 60px;
+        padding: 0;
+    }
+    
+    .flow-item svg {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .flow-label {
+        font-size: 13px;
+        max-width: 110px;
     }
     
     .section-title {
@@ -908,10 +1301,6 @@ body {
     
     .final-cta-title {
         font-size: 36px;
-    }
-    
-    .benefit-number {
-        font-size: 56px;
     }
     
     .container {
@@ -923,10 +1312,25 @@ body {
     .benefits-grid,
     .use-cases-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
     
     .social-proof-card {
         padding: 32px 24px;
+    }
+    
+    /* Улучшения для карточек на мобильных */
+    .pain-card,
+    .step-card,
+    .benefit-card,
+    .use-case-card {
+        padding: 24px;
+    }
+    
+    .pain-text,
+    .step-text,
+    .use-case-text {
+        font-size: 16px;
     }
 }
 
@@ -972,8 +1376,8 @@ body {
 
 @media (max-width: 768px) {
     .scroll-to-top {
-        bottom: 24px;
-        right: 24px;
+        bottom: 20px;
+        right: 20px;
         width: 44px;
         height: 44px;
     }
@@ -981,6 +1385,20 @@ body {
     .scroll-to-top svg {
         width: 20px;
         height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .scroll-to-top {
+        bottom: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .scroll-to-top svg {
+        width: 18px;
+        height: 18px;
     }
 }
 
@@ -1382,10 +1800,13 @@ body {
     }
 }
 
+/* Мобильные стили для страницы calculate */
 @media (max-width: 768px) {
     .calculate-page {
         padding-top: 80px;
         padding-bottom: 48px;
+        padding-left: 12px;
+        padding-right: 12px;
     }
     
     .calculate-header {
@@ -1393,26 +1814,175 @@ body {
     }
     
     .calculate-title {
-        font-size: 32px;
+        font-size: 28px;
+        line-height: 1.2;
+        margin-bottom: 12px;
     }
     
     .calculate-subtitle {
-        font-size: 16px;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+    
+    .calculate-grid {
+        gap: 24px;
     }
     
     .calculate-card,
     .instructions-card {
-        padding: 24px;
+        padding: 20px;
         border-radius: 20px;
     }
     
     .instructions-card {
         position: static;
+        margin-top: 0;
+    }
+    
+    .calculate-form {
+        gap: 20px;
+    }
+    
+    .form-field {
+        gap: 6px;
+    }
+    
+    .form-label {
+        font-size: 15px;
+    }
+    
+    .form-hint {
+        font-size: 11px;
+    }
+    
+    .file-dropzone {
+        padding: 20px;
+        min-height: 70px;
+    }
+    
+    .file-dropzone-text {
+        font-size: 13px;
+    }
+    
+    .file-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .form-input {
+        height: 44px;
+        padding: 0 14px 0 44px;
+        font-size: 15px;
+    }
+    
+    .input-icon {
+        left: 14px;
+        width: 18px;
+        height: 18px;
     }
     
     .submit-button {
-        height: 52px;
+        height: 50px;
         font-size: 16px;
+        border-radius: 12px;
+    }
+    
+    .instructions-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+    
+    .instructions-list {
+        gap: 10px;
+    }
+    
+    .instructions-item {
+        gap: 10px;
+    }
+    
+    .instructions-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .instructions-text {
+        font-size: 13px;
+    }
+    
+    .alert {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    .alert-icon {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* Очень маленькие экраны для calculate */
+@media (max-width: 480px) {
+    .calculate-page {
+        padding-top: 70px;
+        padding-bottom: 40px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .calculate-title {
+        font-size: 24px;
+    }
+    
+    .calculate-subtitle {
+        font-size: 14px;
+    }
+    
+    .calculate-card,
+    .instructions-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+    
+    .calculate-form {
+        gap: 16px;
+    }
+    
+    .form-label {
+        font-size: 14px;
+    }
+    
+    .file-dropzone {
+        padding: 16px;
+        min-height: 60px;
+    }
+    
+    .file-dropzone-text {
+        font-size: 12px;
+    }
+    
+    .form-input {
+        height: 42px;
+        padding: 0 12px 0 40px;
+        font-size: 14px;
+    }
+    
+    .input-icon {
+        left: 12px;
+        width: 16px;
+        height: 16px;
+    }
+    
+    .submit-button {
+        height: 48px;
+        font-size: 15px;
+    }
+    
+    .instructions-title {
+        font-size: 16px;
+    }
+    
+    .instructions-text {
+        font-size: 12px;
     }
 }
 
