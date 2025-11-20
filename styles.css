@@ -778,6 +778,156 @@ body {
     line-height: 1.6;
 }
 
+/* Pricing Section */
+.pricing-section {
+    padding: 96px 0;
+    background: var(--bg-white);
+}
+
+.pricing-section .container {
+    max-width: 896px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.pricing-title {
+    font-size: 48px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 64px;
+    letter-spacing: -1.5px;
+    line-height: 1.2;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+    border-radius: 24px;
+    padding: 48px 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.pricing-card-header {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.pricing-plan-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+}
+
+.pricing-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+}
+
+.pricing-amount {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1;
+}
+
+.pricing-currency {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.pricing-period {
+    font-size: 18px;
+    color: rgba(26, 26, 46, 0.6);
+    margin-left: 4px;
+}
+
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+.pricing-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.pricing-feature-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.pricing-feature-text {
+    font-size: 16px;
+    color: rgba(26, 26, 46, 0.8);
+    line-height: 1.5;
+}
+
+.pricing-button {
+    width: 100%;
+    background: linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(265, 100%, 70%) 100%);
+    color: white;
+    border: none;
+    padding: 18px 32px;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    font-family: 'Inter', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.pricing-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.pricing-button:active {
+    transform: translateY(0);
+}
+
+.pricing-button-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
 /* Final CTA */
 .final-cta {
     padding: 96px 0;
@@ -1092,6 +1242,50 @@ body {
         height: 24px;
     }
     
+    .pricing-section {
+        padding: 48px 0;
+    }
+    
+    .pricing-title {
+        font-size: 28px;
+        margin-bottom: 32px;
+    }
+    
+    .pricing-card {
+        padding: 24px 20px;
+    }
+    
+    .pricing-plan-name {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+    
+    .pricing-amount {
+        font-size: 36px;
+    }
+    
+    .pricing-currency {
+        font-size: 24px;
+    }
+    
+    .pricing-period {
+        font-size: 14px;
+    }
+    
+    .pricing-features {
+        gap: 10px;
+        margin-bottom: 24px;
+    }
+    
+    .pricing-feature-text {
+        font-size: 14px;
+    }
+    
+    .pricing-button {
+        padding: 16px 20px;
+        font-size: 15px;
+    }
+    
     .final-cta-button {
         padding: 18px 24px;
         font-size: 16px;
@@ -1320,6 +1514,48 @@ body {
     
     .social-proof-card {
         padding: 32px 24px;
+    }
+    
+    .pricing-section {
+        padding: 64px 0;
+    }
+    
+    .pricing-title {
+        font-size: 36px;
+        margin-bottom: 48px;
+    }
+    
+    .pricing-card {
+        padding: 32px 24px;
+    }
+    
+    .pricing-plan-name {
+        font-size: 20px;
+    }
+    
+    .pricing-amount {
+        font-size: 40px;
+    }
+    
+    .pricing-currency {
+        font-size: 28px;
+    }
+    
+    .pricing-period {
+        font-size: 16px;
+    }
+    
+    .pricing-features {
+        gap: 12px;
+    }
+    
+    .pricing-feature-text {
+        font-size: 15px;
+    }
+    
+    .pricing-button {
+        padding: 16px 24px;
+        font-size: 16px;
     }
     
     /* Улучшения для карточек на мобильных */
