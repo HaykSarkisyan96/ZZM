@@ -5,6 +5,7 @@ const API_URL = 'https://new-landing-production.up.railway.app/api';
 const tariffCards = document.querySelectorAll('.tariff-card');
 const paymentForm = document.getElementById('paymentForm');
 const telegramUsernameInput = document.getElementById('telegramUsername');
+const emailInput = document.getElementById('email');
 const phoneInput = document.getElementById('phone');
 const selectedTariffField = document.getElementById('selectedTariffField');
 const selectedTariffName = document.getElementById('selectedTariffName');
@@ -179,12 +180,27 @@ paymentForm.addEventListener('submit', async (e) => {
     paymentButtonText.textContent = 'Создание платежа...';
     
     try {
+        // Получаем email
+        const email = emailInput.value.trim();
+        if (!email) {
+            showError('Пожалуйста, укажите email для получения чека');
+            return;
+        }
+        
+        // Проверяем формат email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('Пожалуйста, укажите корректный email адрес');
+            return;
+        }
+        
         // Подготавливаем данные для отправки
         const paymentData = {
             tariff: selectedTariff.id,
             tariff_name: selectedTariff.name,
             price: Number(selectedTariff.price),  // Убеждаемся, что это число
             telegram_username: normalizedUsername,
+            email: email,
             phone: normalizedPhone || null  // Отправляем null вместо пустой строки
         };
         
