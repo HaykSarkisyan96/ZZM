@@ -822,11 +822,13 @@ body {
     transition: all 0.3s ease;
     text-align: center;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Выделенный тариф (Бизнес) */
 .pricing-card-featured {
-    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+    background: linear-gradient(135deg, hsl(210, 100%, 97%) 0%, hsl(265, 100%, 97%) 50%, hsl(340, 82%, 97%) 100%);
     border: 2px solid hsl(210, 100%, 50%);
     box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
     transform: scale(1.05);
@@ -880,6 +882,8 @@ body {
     align-items: baseline;
     justify-content: center;
     gap: 4px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .pricing-amount {
@@ -911,6 +915,7 @@ body {
     flex-direction: column;
     gap: 16px;
     text-align: left;
+    flex-grow: 1;
 }
 
 .pricing-feature {
@@ -943,6 +948,12 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    margin-top: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2724,11 +2735,13 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Выделенный тариф (Бизнес) на странице оплаты */
 .tariff-card-featured {
-    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+    background: linear-gradient(135deg, hsl(210, 100%, 97%) 0%, hsl(265, 100%, 97%) 50%, hsl(340, 82%, 97%) 100%);
     border: 2px solid hsl(210, 100%, 50%);
     box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
     transform: scale(1.02);
@@ -2787,6 +2800,8 @@ body {
     display: flex;
     align-items: baseline;
     gap: 4px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .tariff-amount {
