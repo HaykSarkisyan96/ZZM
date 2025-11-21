@@ -217,7 +217,7 @@ paymentForm.addEventListener('submit', async (e) => {
                 try {
                     const checkout = new window.YooMoneyCheckoutWidget({
                         confirmation_token: data.confirmation_token,
-                        return_url: window.location.origin + '/payment-success.html',
+                        return_url: 'https://hayksarkisyan96.github.io/ZZM/payment-success.html',
                         error_callback: function(error) {
                             console.error('YooMoney widget error:', error);
                             showError('Ошибка при инициализации платежа. Попробуйте еще раз или используйте оплату по реквизитам.');
