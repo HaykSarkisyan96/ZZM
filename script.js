@@ -1,3 +1,32 @@
+// Easing функция для более плавной анимации (ease-in-out-cubic)
+function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+// Плавная прокрутка с кастомной анимацией
+function smoothScrollTo(targetPosition, duration = 800) {
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    let startTime = null;
+
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        // Применяем easing функцию
+        const ease = easeInOutCubic(progress);
+        
+        window.scrollTo(0, startPosition + distance * ease);
+        
+        if (timeElapsed < duration) {
+            requestAnimationFrame(animation);
+        }
+    }
+    
+    requestAnimationFrame(animation);
+}
+
 // Плавная прокрутка для навигационных ссылок
 document.addEventListener('DOMContentLoaded', function() {
     // Обработчик для всех навигационных ссылок
@@ -18,14 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 
                 // Вычисляем позицию с учетом фиксированного header
-                const headerHeight = 80; // Высота фиксированного header
+                const headerHeight = 100; // Высота фиксированного header с отступом
                 const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
                 
-                // Плавная прокрутка с более мягкой анимацией
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+                // Плавная прокрутка с кастомной анимацией (800ms для более плавного движения)
+                smoothScrollTo(targetPosition, 800);
             }
         });
     });
