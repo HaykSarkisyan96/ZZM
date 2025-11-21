@@ -180,8 +180,17 @@ paymentForm.addEventListener('submit', async (e) => {
     paymentButtonText.textContent = 'Создание платежа...';
     
     try {
+        // Проверяем, что поле email существует
+        if (!emailInput) {
+            console.error('Поле email не найдено!');
+            showError('Ошибка: поле email не найдено на странице');
+            return;
+        }
+        
         // Получаем email
         const email = emailInput.value.trim();
+        console.log('Значение email из поля:', email, 'длина:', email.length);
+        
         if (!email) {
             showError('Пожалуйста, укажите email для получения чека');
             return;
@@ -205,11 +214,13 @@ paymentForm.addEventListener('submit', async (e) => {
         };
         
         console.log('Отправляем данные:', paymentData);
+        console.log('Email для отправки:', email, 'тип:', typeof email, 'длина:', email.length);
         console.log('Типы данных:', {
             tariff: typeof paymentData.tariff,
             tariff_name: typeof paymentData.tariff_name,
             price: typeof paymentData.price,
-            telegram_username: typeof paymentData.telegram_username
+            telegram_username: typeof paymentData.telegram_username,
+            email: typeof paymentData.email
         });
         
         // Создаем платеж через API
@@ -280,6 +291,12 @@ paymentForm.addEventListener('submit', async (e) => {
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
+    // Проверяем, что все элементы найдены
+    if (!emailInput) {
+        console.error('Поле email не найдено на странице!');
+    } else {
+        console.log('Поле email найдено:', emailInput);
+    }
     updatePaymentButton();
 });
 
