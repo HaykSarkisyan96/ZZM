@@ -39,7 +39,7 @@
 
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 80px; /* Отступ для фиксированного header */
+    scroll-padding-top: 100px; /* Отступ для фиксированного header (увеличен для более плавной прокрутки) */
 }
 
 body {

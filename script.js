@@ -1,3 +1,36 @@
+// Плавная прокрутка для навигационных ссылок
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработчик для всех навигационных ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // Пропускаем пустые ссылки (#)
+            if (href === '#' || href === '') {
+                return;
+            }
+            
+            // Находим целевой элемент
+            const targetId = href.substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                e.preventDefault();
+                
+                // Вычисляем позицию с учетом фиксированного header
+                const headerHeight = 80; // Высота фиксированного header
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                
+                // Плавная прокрутка с более мягкой анимацией
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
 // CTA buttons - обработчик только для кнопок без ссылок
 // ВАЖНО: Ссылки (<a>) не должны иметь обработчиков, которые блокируют переход
 document.addEventListener('DOMContentLoaded', function() {
