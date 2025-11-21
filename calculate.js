@@ -252,18 +252,34 @@ form.addEventListener('submit', async (e) => {
         }
         
         // Отправляем запрос
+        console.log('Отправляем запрос на:', API_URL);
+        console.log('Данные формы:', {
+            username: username,
+            phone: phone,
+            store_name: storeName,
+            file: fileInput.files[0] ? fileInput.files[0].name : 'не выбран'
+        });
+        
         const response = await fetch(API_URL, {
             method: 'POST',
             body: formData
+        }).catch(fetchError => {
+            console.error('Fetch error:', fetchError);
+            throw new Error('Load failed: ' + fetchError.message);
         });
+        
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
         
         // Проверяем, является ли ответ JSON
         let data;
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
             data = await response.json();
+            console.log('Response data:', data);
         } else {
             const text = await response.text();
+            console.error('Non-JSON response:', text);
             throw new Error(`Сервер вернул неожиданный ответ: ${text.substring(0, 100)}`);
         }
         
@@ -295,12 +311,23 @@ form.addEventListener('submit', async (e) => {
         }
     } catch (error) {
         console.error('Error:', error);
+        console.error('Error details:', {
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+        });
         
         // Более детальная обработка ошибок
         let errorMessage = 'Не удалось обработать файл. ';
         
         if (error.name === 'TypeError' && error.message.includes('fetch')) {
             errorMessage += 'Не удалось подключиться к серверу. Проверьте, что API сервер запущен и доступен по адресу: ' + API_URL;
+        } else if (error.message && error.message.includes('Load failed')) {
+            errorMessage += 'Не удалось загрузить файл. Возможные причины:<br>' +
+                           '1. Проблема с подключением к интернету<br>' +
+                           '2. API сервер временно недоступен<br>' +
+                           '3. Проблема с подпиской (проверьте, что подписка активирована)<br><br>' +
+                           'Попробуйте обновить страницу и попробовать снова.';
         } else if (error.message) {
             errorMessage += error.message;
         } else {
