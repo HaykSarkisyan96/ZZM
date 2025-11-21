@@ -821,6 +821,38 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     text-align: center;
+    position: relative;
+}
+
+/* Выделенный тариф (Бизнес) */
+.pricing-card-featured {
+    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+    border: 2px solid hsl(210, 100%, 50%);
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+    transform: scale(1.05);
+}
+
+.pricing-card-featured:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3);
+}
+
+/* Бейдж "Популярный" */
+.pricing-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(265, 100%, 70%) 100%);
+    color: white;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    z-index: 10;
 }
 
 .pricing-card:hover {
@@ -2691,6 +2723,39 @@ body {
     border: 2px solid transparent;
     transition: all 0.3s ease;
     cursor: pointer;
+    position: relative;
+}
+
+/* Выделенный тариф (Бизнес) на странице оплаты */
+.tariff-card-featured {
+    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+    border: 2px solid hsl(210, 100%, 50%);
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+    transform: scale(1.02);
+}
+
+.tariff-card-featured:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3);
+}
+
+/* Бейдж "Популярный" для страницы оплаты */
+.tariff-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(265, 100%, 70%) 100%);
+    color: white;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    z-index: 10;
+    font-family: 'Inter', sans-serif;
 }
 
 .tariff-card:hover {
