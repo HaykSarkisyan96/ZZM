@@ -16,12 +16,20 @@ const errorAlert = document.getElementById('errorAlert');
 const errorMessage = document.getElementById('errorMessage');
 const successAlert = document.getElementById('successAlert');
 const successMessage = document.getElementById('successMessage');
+const subscriptionExistsAlert = document.getElementById('subscriptionExistsAlert');
+const subscriptionExistsMessage = document.getElementById('subscriptionExistsMessage');
 const yookassaWidgetContainer = document.getElementById('yookassa-widget-container');
 const manualPaymentInfo = document.getElementById('manualPaymentInfo');
 const paymentPurpose = document.getElementById('paymentPurpose');
 
 // Выбранный тариф
 let selectedTariff = null;
+
+// Флаг существующей подписки
+let hasActiveSubscription = false;
+
+// Таймер для debounce проверки подписки
+let subscriptionCheckTimer = null;
 
 // Показ реквизитов для ручной оплаты
 function showManualPayment() {
@@ -66,9 +74,12 @@ function updatePaymentButton() {
     const hasUsername = telegramUsernameInput.value.trim().length > 0;
     const hasTariff = selectedTariff !== null;
     
-    paymentButton.disabled = !hasUsername || !hasTariff;
+    // Блокируем кнопку, если есть активная подписка
+    paymentButton.disabled = !hasUsername || !hasTariff || hasActiveSubscription;
     
-    if (hasTariff && hasUsername) {
+    if (hasActiveSubscription) {
+        paymentButtonText.textContent = 'У вас уже есть подписка';
+    } else if (hasTariff && hasUsername) {
         paymentButtonText.textContent = `Оплатить ${selectedTariff.price} ₽`;
     } else if (hasTariff) {
         paymentButtonText.textContent = 'Укажите Telegram username';
@@ -86,8 +97,26 @@ telegramUsernameInput.addEventListener('input', (e) => {
     }
     e.target.value = value ? '@' + value : '';
     
+    // Скрываем alert о подписке при изменении
+    hasActiveSubscription = false;
+    subscriptionExistsAlert.style.display = 'none';
     hideAlerts();
     updatePaymentButton();
+    
+    // Проверяем подписку с задержкой (debounce)
+    if (subscriptionCheckTimer) {
+        clearTimeout(subscriptionCheckTimer);
+    }
+    
+    subscriptionCheckTimer = setTimeout(() => {
+        const normalizedValue = value.toLowerCase().trim();
+        if (normalizedValue.length >= 3) {
+            checkSubscription(normalizedValue);
+        } else {
+            hasActiveSubscription = false;
+            updatePaymentButton();
+        }
+    }, 800); // Проверка через 800ms после последнего ввода
 });
 
 // Обработка изменения номера телефона
@@ -123,6 +152,86 @@ phoneInput.addEventListener('input', (e) => {
 function hideAlerts() {
     errorAlert.style.display = 'none';
     successAlert.style.display = 'none';
+    subscriptionExistsAlert.style.display = 'none';
+}
+
+// Проверка существующей подписки
+async function checkSubscription(username) {
+    if (!username || username.length < 3) {
+        hasActiveSubscription = false;
+        hideAlerts();
+        updatePaymentButton();
+        return;
+    }
+    
+    // Нормализуем username
+    const normalizedUsername = username.replace('@', '').toLowerCase().trim();
+    
+    try {
+        const response = await fetch(`${API_URL}/check_subscription?username=${encodeURIComponent(normalizedUsername)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Проверяем различные форматы ответа API
+            const subscriptionExists = 
+                data.has_subscription === true ||
+                data.subscription_exists === true ||
+                data.is_active === true ||
+                (data.active === true && data.subscription) ||
+                (data.subscription && data.subscription.active === true) ||
+                (data.status === 'active');
+            
+            if (subscriptionExists) {
+                // Подписка существует
+                hasActiveSubscription = true;
+                const tariffName = data.tariff_name || data.tariff || data.subscription?.tariff_name || data.subscription?.tariff || 'активна';
+                const expiresAt = data.expires_at || data.expiration_date || data.subscription?.expires_at || data.subscription?.expiration_date;
+                const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }) : '';
+                
+                let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
+                message += `Тариф: <strong>${tariffName}</strong>`;
+                if (formattedDate) {
+                    message += `<br>Действует до: <strong>${formattedDate}</strong>`;
+                }
+                message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+                
+                subscriptionExistsMessage.innerHTML = message;
+                subscriptionExistsAlert.style.display = 'flex';
+                errorAlert.style.display = 'none';
+                successAlert.style.display = 'none';
+                
+                // Блокируем кнопку оплаты
+                updatePaymentButton();
+            } else {
+                // Подписки нет
+                hasActiveSubscription = false;
+                subscriptionExistsAlert.style.display = 'none';
+                updatePaymentButton();
+            }
+        } else {
+            // Если endpoint не существует (404), просто не блокируем
+            // Для других ошибок тоже не блокируем, чтобы не мешать новой подписке
+            hasActiveSubscription = false;
+            subscriptionExistsAlert.style.display = 'none';
+            updatePaymentButton();
+        }
+    } catch (error) {
+        console.error('Ошибка при проверке подписки:', error);
+        // При ошибке не блокируем оплату - возможно endpoint еще не реализован
+        hasActiveSubscription = false;
+        subscriptionExistsAlert.style.display = 'none';
+        updatePaymentButton();
+    }
 }
 
 // Показ ошибки
@@ -138,7 +247,17 @@ function showSuccess(message) {
     successMessage.innerHTML = message;
     successAlert.style.display = 'flex';
     errorAlert.style.display = 'none';
+    subscriptionExistsAlert.style.display = 'none';
     successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Показ информации о существующей подписке
+function showSubscriptionExists(message) {
+    subscriptionExistsMessage.innerHTML = message || '<strong>У вас уже есть активная подписка</strong><br>Повторная оплата невозможна.';
+    subscriptionExistsAlert.style.display = 'flex';
+    errorAlert.style.display = 'none';
+    successAlert.style.display = 'none';
+    subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // Обработка отправки формы
@@ -161,6 +280,12 @@ paymentForm.addEventListener('submit', async (e) => {
     const normalizedUsername = telegramUsername.replace('@', '').toLowerCase();
     if (normalizedUsername.length < 3) {
         showError('Пожалуйста, укажите корректный Telegram username');
+        return;
+    }
+    
+    // Проверяем наличие активной подписки перед оплатой
+    if (hasActiveSubscription) {
+        showError('У вас уже есть активная подписка. Повторная оплата невозможна.');
         return;
     }
     
@@ -277,7 +402,16 @@ paymentForm.addEventListener('submit', async (e) => {
             }
         } else {
             const errorMsg = data.error || data.message || 'Ошибка при создании платежа';
-            showError(errorMsg);
+            
+            // Проверяем, не связана ли ошибка с существующей подпиской
+            const errorText = errorMsg.toLowerCase();
+            if (errorText.includes('подписка') && (errorText.includes('уже') || errorText.includes('существует') || errorText.includes('активна'))) {
+                hasActiveSubscription = true;
+                showSubscriptionExists(errorMsg);
+            } else {
+                showError(errorMsg);
+            }
+            
             paymentButton.disabled = false;
             updatePaymentButton();
         }
@@ -297,6 +431,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.log('Поле email найдено:', emailInput);
     }
+    
+    // Проверяем подписку, если username уже заполнен (например, из URL параметров)
+    const initialUsername = telegramUsernameInput.value.trim().replace('@', '').toLowerCase();
+    if (initialUsername.length >= 3) {
+        checkSubscription(initialUsername);
+    }
+    
     updatePaymentButton();
 });
 

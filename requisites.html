@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Реквизиты — ЗаявкаЗаМинуту</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Фиксированный Header -->
+    <header class="header fixed-header">
+        <div class="container header-container">
+            <div class="header-content">
+                <a href="index.html" class="logo-container">
+                    <div class="logo-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">ЗаявкаЗаМинуту</span>
+                </a>
+                <nav class="header-nav">
+                    <a href="#main" class="nav-link">Главная</a>
+                    <a href="#how-it-works" class="nav-link">Как это работает</a>
+                    <a href="#reviews" class="nav-link">Отзывы</a>
+                    <a href="#pricing" class="nav-link">Тарифы</a>
+                    <a href="#contacts" class="nav-link">Контакты</a>
+                </nav>
+                <a href="calculate.html" class="try-button">Попробовать</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="requisites-page">
+        <div class="container requisites-container">
+            <div class="requisites-header">
+                <h1 class="requisites-title">Реквизиты</h1>
+                <p class="requisites-subtitle">Информация об индивидуальном предпринимателе</p>
+            </div>
+
+            <div class="requisites-card">
+                <div class="requisites-section">
+                    <h2 class="requisites-section-title">Индивидуальный предприниматель</h2>
+                    <div class="requisites-item">
+                        <span class="requisites-label">ФИО:</span>
+                        <span class="requisites-value">Саркисян Айк Юрьевич</span>
+                    </div>
+                </div>
+
+                <div class="requisites-section">
+                    <h2 class="requisites-section-title">Идентификационные данные</h2>
+                    <div class="requisites-item">
+                        <span class="requisites-label">ИНН:</span>
+                        <div class="requisites-value-wrapper">
+                            <span class="requisites-value">910703559058</span>
+                            <button class="requisites-copy-btn" data-copy="910703559058" aria-label="Скопировать ИНН">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="requisites-item">
+                        <span class="requisites-label">ОГРНИП:</span>
+                        <div class="requisites-value-wrapper">
+                            <span class="requisites-value">316910200224855</span>
+                            <button class="requisites-copy-btn" data-copy="316910200224855" aria-label="Скопировать ОГРНИП">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="requisites-section">
+                    <h2 class="requisites-section-title">Адрес регистрации</h2>
+                    <div class="requisites-item">
+                        <span class="requisites-label">Адрес:</span>
+                        <span class="requisites-value">296500, Россия, Республика Крым, г. Саки, ул. Революции, д. 7, кв. 3</span>
+                    </div>
+                </div>
+
+                <div class="requisites-section">
+                    <h2 class="requisites-section-title">Контактная информация</h2>
+                    <div class="requisites-item">
+                        <span class="requisites-label">Телефон:</span>
+                        <a href="tel:+79787161318" class="requisites-value requisites-link">+7 (978) 716-13-18</a>
+                    </div>
+                    <div class="requisites-item">
+                        <span class="requisites-label">Email:</span>
+                        <a href="mailto:ajk.sarkisyan.96@mail.ru" class="requisites-value requisites-link">ajk.sarkisyan.96@mail.ru</a>
+                    </div>
+                    <div class="requisites-item">
+                        <span class="requisites-label">Telegram:</span>
+                        <a href="https://t.me/HaykSarkisyan" target="_blank" rel="noopener noreferrer" class="requisites-value requisites-link">@HaykSarkisyan</a>
+                    </div>
+                </div>
+
+                <div class="requisites-section">
+                    <h2 class="requisites-section-title">Банковские реквизиты</h2>
+                    <div class="requisites-item">
+                        <span class="requisites-label">Расчетный счет:</span>
+                        <div class="requisites-value-wrapper">
+                            <span class="requisites-value">40802810552000105175</span>
+                            <button class="requisites-copy-btn" data-copy="40802810552000105175" aria-label="Скопировать расчетный счет">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="requisites-item">
+                        <span class="requisites-label">БИК банка:</span>
+                        <div class="requisites-value-wrapper">
+                            <span class="requisites-value">046015602</span>
+                            <button class="requisites-copy-btn" data-copy="046015602" aria-label="Скопировать БИК">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="requisites-item">
+                        <span class="requisites-label">Название банка:</span>
+                        <div class="requisites-value-wrapper">
+                            <span class="requisites-value">ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК</span>
+                            <button class="requisites-copy-btn" data-copy="ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК" aria-label="Скопировать название банка">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="requisites-item">
+                        <span class="requisites-label">Корреспондентский счет:</span>
+                        <div class="requisites-value-wrapper">
+                            <span class="requisites-value">30101810600000000602</span>
+                            <button class="requisites-copy-btn" data-copy="30101810600000000602" aria-label="Скопировать корреспондентский счет">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="requisites-footer">
+                <a href="index.html" class="requisites-back-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                    Вернуться на главную
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Функция копирования реквизитов
+        document.addEventListener('DOMContentLoaded', () => {
+            const copyButtons = document.querySelectorAll('.requisites-copy-btn');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const textToCopy = button.getAttribute('data-copy');
+                    
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        
+                        // Показываем визуальную обратную связь
+                        const originalHTML = button.innerHTML;
+                        button.innerHTML = `
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        `;
+                        button.classList.add('copied');
+                        
+                        // Возвращаем иконку через 2 секунды
+                        setTimeout(() => {
+                            button.innerHTML = originalHTML;
+                            button.classList.remove('copied');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Ошибка копирования:', err);
+                        // Fallback для старых браузеров
+                        const textArea = document.createElement('textarea');
+                        textArea.value = textToCopy;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            button.classList.add('copied');
+                            setTimeout(() => {
+                                button.classList.remove('copied');
+                            }, 2000);
+                        } catch (fallbackErr) {
+                            console.error('Ошибка копирования (fallback):', fallbackErr);
+                        }
+                        document.body.removeChild(textArea);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
