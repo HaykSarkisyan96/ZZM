@@ -106,7 +106,7 @@ body {
 }
 
 .header-container {
-    padding: 16px;
+    padding: 16px 12px 16px 8px;
 }
 
 .header-content {
@@ -128,9 +128,9 @@ body {
     background: linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(265, 100%, 70%) 100%);
     color: white;
     border: none;
-    padding: 0 18px;
-    height: 38px;
-    font-size: 14px;
+    padding: 0 24px;
+    height: 44px;
+    font-size: 15px;
     font-weight: 500;
     border-radius: 8px;
     cursor: pointer;
@@ -160,8 +160,6 @@ body {
     text-decoration: none;
     transition: opacity 0.3s ease;
     flex-shrink: 0;
-    margin-right: auto;
-    margin-left: -16px;
 }
 
 .logo-container:hover {
@@ -210,8 +208,6 @@ body {
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    margin-left: auto;
-    margin-right: -8px;
     flex-shrink: 0;
 }
 
@@ -1233,9 +1229,9 @@ body {
     }
     
     .nav-link {
-        padding: 0 18px;
-        font-size: 14px;
-        height: 38px;
+        padding: 0 20px;
+        font-size: 15px;
+        height: 44px;
     }
     
     .hero-title {

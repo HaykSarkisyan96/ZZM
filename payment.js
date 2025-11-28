@@ -155,7 +155,175 @@ function hideAlerts() {
     subscriptionExistsAlert.style.display = 'none';
 }
 
-// Проверка существующей подписки
+// Синхронная проверка подписки (используется перед отправкой формы)
+async function checkSubscriptionSynchronous(username) {
+    if (!username || username.length < 3) {
+        return { hasSubscription: false };
+    }
+    
+    const normalizedUsername = username.replace('@', '').toLowerCase().trim();
+    
+    try {
+        console.log('Проверка подписки для:', normalizedUsername);
+        const response = await fetch(`${API_URL}/check_subscription?username=${encodeURIComponent(normalizedUsername)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        console.log('Ответ проверки подписки:', response.status, response.statusText);
+        
+        if (response.ok) {
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                console.error('Ошибка парсинга JSON ответа:', e);
+                const textResponse = await response.text();
+                console.log('Текст ответа (не JSON):', textResponse);
+                
+                // Если ответ - просто текст или число
+                if (textResponse === 'true' || textResponse === '1' || textResponse.trim().toLowerCase() === 'true') {
+                    console.log('Подписка найдена (текстовый ответ)');
+                    return { hasSubscription: true };
+                }
+                return { hasSubscription: false };
+            }
+            
+            console.log('Данные синхронной проверки подписки:', JSON.stringify(data, null, 2));
+            console.log('Тип данных:', typeof data);
+            if (typeof data === 'object' && data !== null) {
+                console.log('Ключи объекта:', Object.keys(data));
+                console.log('Все значения объекта:', Object.entries(data));
+            }
+            
+            // Проверяем различные форматы ответа API (более тщательно)
+            let subscriptionExists = false;
+            let subscriptionReason = '';
+            
+            // Если это просто boolean или строка
+            if (data === true || data === 'true' || data === 1 || data === '1') {
+                subscriptionExists = true;
+                subscriptionReason = 'boolean/string true';
+            }
+            // Если это объект
+            else if (typeof data === 'object' && data !== null) {
+                // Проверяем прямые поля
+                if (data.has_subscription === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'has_subscription === true';
+                } else if (data.subscription_exists === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'subscription_exists === true';
+                } else if (data.is_active === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'is_active === true';
+                } else if (data.active === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'active === true';
+                } else if (data.status && (data.status === 'active' || data.status === 'ACTIVE')) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'status === active';
+                }
+                // Проверяем вложенный объект subscription
+                else if (data.subscription && typeof data.subscription === 'object') {
+                    if (data.subscription.active === true) {
+                        subscriptionExists = true;
+                        subscriptionReason = 'subscription.active === true';
+                    } else if (data.subscription.is_active === true) {
+                        subscriptionExists = true;
+                        subscriptionReason = 'subscription.is_active === true';
+                    } else if (data.subscription.status && (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE')) {
+                        subscriptionExists = true;
+                        subscriptionReason = 'subscription.status === active';
+                    }
+                }
+                // Проверяем наличие любых признаков подписки в объекте
+                if (!subscriptionExists && (data.tariff || data.tariff_name || data.expires_at || data.expiration_date)) {
+                    // Если есть информация о тарифе или дате, скорее всего это подписка
+                    subscriptionExists = true;
+                    subscriptionReason = 'наличие тарифа/даты в объекте';
+                }
+                // Проверяем любое непустое значение в объекте, которое может указывать на подписку
+                if (!subscriptionExists && Object.keys(data).length > 0) {
+                    // Если объект не пустой и не содержит явного false или null для подписки
+                    const keys = Object.keys(data);
+                    if (!keys.includes('has_subscription') || data.has_subscription !== false) {
+                        if (keys.some(k => k.toLowerCase().includes('subscription') || k.toLowerCase().includes('tariff'))) {
+                            subscriptionExists = true;
+                            subscriptionReason = 'наличие полей связанных с подпиской';
+                        }
+                    }
+                }
+            }
+            // Если это массив - проверяем, не пустой ли он
+            else if (Array.isArray(data) && data.length > 0) {
+                subscriptionExists = true;
+                subscriptionReason = 'непустой массив';
+            }
+            
+            console.log('Результат синхронной проверки подписки:', subscriptionExists ? 'НАЙДЕНА' : 'НЕ НАЙДЕНА', subscriptionReason ? `(${subscriptionReason})` : '');
+            
+            if (subscriptionExists) {
+                // Извлекаем информацию о тарифе и дате истечения
+                const tariffName = 
+                    data.tariff_name || 
+                    data.tariff || 
+                    data.tariff_id ||
+                    data.subscription?.tariff_name || 
+                    data.subscription?.tariff || 
+                    data.subscription?.tariff_id ||
+                    (data.subscription && typeof data.subscription === 'object' ? 
+                        (data.subscription.name || data.subscription.title) : null) ||
+                    'активна';
+                
+                const expiresAt = 
+                    data.expires_at || 
+                    data.expiration_date || 
+                    data.expires || 
+                    data.end_date ||
+                    data.subscription?.expires_at || 
+                    data.subscription?.expiration_date || 
+                    data.subscription?.expires ||
+                    data.subscription?.end_date;
+                
+                console.log('Информация о подписке:', { tariffName, expiresAt });
+                
+                return {
+                    hasSubscription: true,
+                    tariffName: tariffName,
+                    expiresAt: expiresAt
+                };
+            }
+        } else {
+            console.log('Ошибка ответа при проверке подписки:', response.status, response.statusText);
+            let errorText = '';
+            try {
+                errorText = await response.text();
+                console.log('Текст ошибки:', errorText);
+            } catch (e) {
+                console.error('Не удалось прочитать текст ошибки:', e);
+            }
+            
+            // Если API вернул ошибку, но статус 404 или другой - это нормально, подписки нет
+            // Но если это 500 или другая ошибка сервера - лучше не блокировать, но логировать
+            if (response.status >= 500) {
+                console.warn('Серверная ошибка при проверке подписки. Продолжаем, но с осторожностью.');
+            }
+        }
+        
+        return { hasSubscription: false };
+    } catch (error) {
+        console.error('Ошибка при синхронной проверке подписки:', error);
+        console.error('Стек ошибки:', error.stack);
+        // При ошибке сети или другого типа - логируем, но не блокируем оплату
+        // Это предотвратит ложные блокировки при проблемах с сетью
+        return { hasSubscription: false };
+    }
+}
+
+// Проверка существующей подписки (с debounce, используется при вводе)
 async function checkSubscription(username) {
     if (!username || username.length < 3) {
         hasActiveSubscription = false;
@@ -177,15 +345,31 @@ async function checkSubscription(username) {
         
         if (response.ok) {
             const data = await response.json();
+            console.log('Ответ API check_subscription:', JSON.stringify(data, null, 2));
+            console.log('Тип данных:', typeof data);
+            console.log('Ключи объекта:', Object.keys(data || {}));
             
-            // Проверяем различные форматы ответа API
+            // Проверяем различные форматы ответа API (более тщательно)
             const subscriptionExists = 
+                data === true || // Если API вернул просто true
+                data === 'true' || // Если строка 'true'
                 data.has_subscription === true ||
                 data.subscription_exists === true ||
                 data.is_active === true ||
-                (data.active === true && data.subscription) ||
-                (data.subscription && data.subscription.active === true) ||
-                (data.status === 'active');
+                data.active === true ||
+                data.status === 'active' ||
+                data.status === 'ACTIVE' ||
+                (typeof data === 'object' && data !== null && 
+                 (data.active || data.is_active || data.has_subscription || data.subscription_exists)) ||
+                (data.subscription && (
+                    data.subscription.active === true ||
+                    data.subscription.is_active === true ||
+                    data.subscription.status === 'active' ||
+                    data.subscription.status === 'ACTIVE'
+                )) ||
+                (Array.isArray(data) && data.length > 0); // Если массив с подписками
+            
+            console.log('Подписка найдена при вводе:', subscriptionExists);
             
             if (subscriptionExists) {
                 // Подписка существует
@@ -219,8 +403,11 @@ async function checkSubscription(username) {
                 updatePaymentButton();
             }
         } else {
-            // Если endpoint не существует (404), просто не блокируем
-            // Для других ошибок тоже не блокируем, чтобы не мешать новой подписке
+            // Если endpoint не существует (404) или другая ошибка
+            console.log('Ошибка при проверке подписки:', response.status, response.statusText);
+            const errorText = await response.text().catch(() => '');
+            console.log('Текст ошибки:', errorText);
+            // Не блокируем, если API не доступен
             hasActiveSubscription = false;
             subscriptionExistsAlert.style.display = 'none';
             updatePaymentButton();
@@ -276,18 +463,74 @@ paymentForm.addEventListener('submit', async (e) => {
         return;
     }
     
-    // Нормализуем username (убираем @ если есть, приводим к нижнему регистру)
-    const normalizedUsername = telegramUsername.replace('@', '').toLowerCase();
+    // Нормализуем username (убираем @ если есть, приводим к нижнему регистру, убираем пробелы)
+    const normalizedUsername = telegramUsername.replace('@', '').toLowerCase().trim();
     if (normalizedUsername.length < 3) {
         showError('Пожалуйста, укажите корректный Telegram username');
         return;
     }
     
-    // Проверяем наличие активной подписки перед оплатой
-    if (hasActiveSubscription) {
-        showError('У вас уже есть активная подписка. Повторная оплата невозможна.');
+    // ОБЯЗАТЕЛЬНАЯ проверка подписки перед отправкой формы
+    console.log('=== НАЧАЛО ПРОВЕРКИ ПОДПИСКИ ===');
+    console.log('Username для проверки:', normalizedUsername);
+    paymentButton.disabled = true;
+    paymentButtonText.textContent = 'Проверка подписки...';
+    
+    // Выполняем синхронную проверку подписки
+    let subscriptionCheck;
+    try {
+        subscriptionCheck = await checkSubscriptionSynchronous(normalizedUsername);
+        console.log('Результат проверки подписки:', subscriptionCheck);
+    } catch (error) {
+        console.error('Ошибка при проверке подписки:', error);
+        // При ошибке проверки блокируем оплату для безопасности
+        showError('Не удалось проверить статус подписки. Пожалуйста, попробуйте позже или свяжитесь с поддержкой.');
+        paymentButton.disabled = false;
+        updatePaymentButton();
         return;
     }
+    
+    if (subscriptionCheck && subscriptionCheck.hasSubscription === true) {
+        // Подписка найдена - блокируем оплату
+        console.log('❌ ПОДПИСКА НАЙДЕНА! Блокируем оплату.');
+        hasActiveSubscription = true;
+        paymentButton.disabled = true;
+        updatePaymentButton();
+        
+        const tariffName = subscriptionCheck.tariffName || 'активна';
+        const expiresAt = subscriptionCheck.expiresAt;
+        const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        }) : '';
+        
+        let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
+        message += `Тариф: <strong>${tariffName}</strong>`;
+        if (formattedDate) {
+            message += `<br>Действует до: <strong>${formattedDate}</strong>`;
+        }
+        message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+        
+        subscriptionExistsMessage.innerHTML = message;
+        subscriptionExistsAlert.style.display = 'flex';
+        subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ПОДПИСКА НАЙДЕНА ===');
+        return;
+    }
+    
+    // Проверяем наличие активной подписки (на случай, если флаг установлен)
+    if (hasActiveSubscription === true) {
+        console.log('❌ Флаг hasActiveSubscription установлен. Блокируем оплату.');
+        showError('У вас уже есть активная подписка. Повторная оплата невозможна.');
+        paymentButton.disabled = false;
+        updatePaymentButton();
+        console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ФЛАГ УСТАНОВЛЕН ===');
+        return;
+    }
+    
+    console.log('✅ Подписка не найдена. Продолжаем создание платежа...');
+    console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ПОДПИСКИ НЕТ ===');
     
     // Нормализуем номер телефона (если указан)
     let normalizedPhone = null;
@@ -359,8 +602,76 @@ paymentForm.addEventListener('submit', async (e) => {
         
         console.log('Ответ сервера:', response.status, response.statusText);
         
-        const data = await response.json();
-        console.log('Данные ответа:', data);
+        let data;
+        try {
+            data = await response.json();
+        } catch (e) {
+            console.error('Ошибка парсинга JSON ответа при создании платежа:', e);
+            const textResponse = await response.text();
+            console.log('Текст ответа (не JSON):', textResponse);
+            showError('Ошибка при создании платежа. Попробуйте еще раз.');
+            paymentButton.disabled = false;
+            updatePaymentButton();
+            return;
+        }
+        
+        console.log('Данные ответа при создании платежа:', JSON.stringify(data, null, 2));
+        console.log('Полный ответ API:', {
+            status: response.status,
+            ok: response.ok,
+            data: data
+        });
+        
+        // ВАЖНО: Проверяем ошибку о существующей подписке ДО проверки success
+        if (!response.ok || !data.success) {
+            const errorMsg = data.error || data.message || 'Ошибка при создании платежа';
+            console.log('Ошибка создания платежа:', errorMsg);
+            console.log('Полный ответ API (ошибка):', JSON.stringify(data, null, 2));
+            
+            // Проверяем, не связана ли ошибка с существующей подпиской
+            const errorText = (errorMsg || '').toLowerCase();
+            const errorDataStr = JSON.stringify(data).toLowerCase();
+            
+            // Проверяем различные варианты сообщений о существующей подписке
+            const subscriptionError = 
+                errorText.includes('подписка') && (errorText.includes('уже') || errorText.includes('существует') || errorText.includes('активна')) ||
+                errorText.includes('subscription') && (errorText.includes('already') || errorText.includes('exists') || errorText.includes('active')) ||
+                errorDataStr.includes('has_subscription') ||
+                errorDataStr.includes('subscription_exists') ||
+                (data.has_subscription === true) ||
+                (data.subscription_exists === true) ||
+                (data.subscription && data.subscription.active === true);
+            
+            if (subscriptionError) {
+                console.log('API сообщает о существующей подписке. Блокируем оплату.');
+                hasActiveSubscription = true;
+                
+                // Пытаемся получить информацию о подписке из ответа
+                const tariffName = data.tariff_name || data.tariff || 'активна';
+                const expiresAt = data.expires_at || data.expiration_date;
+                const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }) : '';
+                
+                let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
+                if (tariffName !== 'активна') {
+                    message += `Тариф: <strong>${tariffName}</strong>`;
+                }
+                if (formattedDate) {
+                    message += `<br>Действует до: <strong>${formattedDate}</strong>`;
+                }
+                message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+                
+                subscriptionExistsMessage.innerHTML = message || errorMsg;
+                subscriptionExistsAlert.style.display = 'flex';
+                subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                updatePaymentButton();
+                paymentButton.disabled = false;
+                return;
+            }
+        }
         
         if (response.ok && data.success) {
             // Проверяем, есть ли настоящий confirmation_token (не тестовый)
@@ -402,12 +713,48 @@ paymentForm.addEventListener('submit', async (e) => {
             }
         } else {
             const errorMsg = data.error || data.message || 'Ошибка при создании платежа';
+            console.log('Ошибка создания платежа:', errorMsg);
+            console.log('Полный ответ API:', JSON.stringify(data, null, 2));
             
             // Проверяем, не связана ли ошибка с существующей подпиской
             const errorText = errorMsg.toLowerCase();
-            if (errorText.includes('подписка') && (errorText.includes('уже') || errorText.includes('существует') || errorText.includes('активна'))) {
+            const errorDataStr = JSON.stringify(data).toLowerCase();
+            
+            // Проверяем различные варианты сообщений о существующей подписке
+            const subscriptionError = 
+                errorText.includes('подписка') && (errorText.includes('уже') || errorText.includes('существует') || errorText.includes('активна')) ||
+                errorText.includes('subscription') && (errorText.includes('already') || errorText.includes('exists') || errorText.includes('active')) ||
+                errorDataStr.includes('has_subscription') ||
+                errorDataStr.includes('subscription_exists') ||
+                (data.has_subscription === true) ||
+                (data.subscription_exists === true);
+            
+            if (subscriptionError) {
+                console.log('API сообщает о существующей подписке. Блокируем оплату.');
                 hasActiveSubscription = true;
-                showSubscriptionExists(errorMsg);
+                
+                // Пытаемся получить информацию о подписке из ответа
+                const tariffName = data.tariff_name || data.tariff || 'активна';
+                const expiresAt = data.expires_at || data.expiration_date;
+                const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }) : '';
+                
+                let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
+                if (tariffName !== 'активна') {
+                    message += `Тариф: <strong>${tariffName}</strong>`;
+                }
+                if (formattedDate) {
+                    message += `<br>Действует до: <strong>${formattedDate}</strong>`;
+                }
+                message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+                
+                subscriptionExistsMessage.innerHTML = message || errorMsg;
+                subscriptionExistsAlert.style.display = 'flex';
+                subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                updatePaymentButton();
             } else {
                 showError(errorMsg);
             }
