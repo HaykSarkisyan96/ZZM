@@ -1202,25 +1202,30 @@ body {
 
 .trial-form-wrapper {
     max-width: 600px;
-    margin: 0;
+    margin: 0 auto;
+    margin-top: 32px;
 }
 
 .trial-page {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
     padding-top: 96px;
 }
 
 .trial-page .payment-container {
     max-width: 1200px;
-    margin: 0;
-    padding-left: 96px;
+    margin: 0 auto;
+}
+
+.trial-page .payment-header {
+    margin-bottom: 32px;
 }
 
 @media (max-width: 768px) {
-    .trial-page .payment-container {
-        padding-left: 16px;
+    .trial-form-wrapper {
+        margin-top: 24px;
+    }
+    
+    .trial-page .payment-header {
+        margin-bottom: 24px;
     }
 }
 
