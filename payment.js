@@ -41,6 +41,31 @@ function showManualPayment() {
     manualPaymentInfo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+// Автоматический выбор тарифа из URL параметра
+function selectTariffFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tariffParam = urlParams.get('tariff');
+    
+    if (tariffParam) {
+        // Ищем карточку тарифа с нужным data-tariff
+        const targetCard = Array.from(tariffCards).find(card => card.dataset.tariff === tariffParam);
+        
+        if (targetCard) {
+            // Программно кликаем на карточку тарифа
+            targetCard.click();
+            // Прокручиваем к форме
+            setTimeout(() => {
+                paymentForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    }
+}
+
+// Вызываем при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    selectTariffFromURL();
+});
+
 // Обработка выбора тарифа
 tariffCards.forEach(card => {
     card.addEventListener('click', () => {
