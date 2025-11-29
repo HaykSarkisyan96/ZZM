@@ -1200,6 +1200,30 @@ body {
     stroke: white;
 }
 
+.trial-form-wrapper {
+    max-width: 600px;
+    margin: 0;
+}
+
+.trial-page {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 96px;
+}
+
+.trial-page .payment-container {
+    max-width: 1200px;
+    margin: 0;
+    padding-left: 96px;
+}
+
+@media (max-width: 768px) {
+    .trial-page .payment-container {
+        padding-left: 16px;
+    }
+}
+
 .trial-info-box {
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(34, 197, 94, 0.02) 100%);
     border: 2px solid hsl(142, 76%, 36%);
@@ -3132,11 +3156,6 @@ body {
     padding-right: 16px;
 }
 
-.trial-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .payment-container {
     max-width: 1200px;
