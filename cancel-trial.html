@@ -165,16 +165,30 @@
                     }),
                 });
                 
+                if (!response.ok) {
+                    // Пробуем получить текст ошибки
+                    let errorText = '';
+                    try {
+                        const errorData = await response.json();
+                        errorText = errorData.error || errorData.message || `HTTP ${response.status}`;
+                    } catch {
+                        errorText = `HTTP ${response.status}: ${response.statusText}`;
+                    }
+                    showAlert(`❌ ${errorText}`, 'error');
+                    return;
+                }
+                
                 const data = await response.json();
                 
-                if (response.ok && data.success) {
+                if (data.success) {
                     showAlert(`✅ ${data.message}`, 'success');
                     usernameInput.value = '';
                 } else {
                     showAlert(`❌ ${data.message || data.error || 'Произошла ошибка'}`, 'error');
                 }
             } catch (error) {
-                showAlert('❌ Произошла ошибка при подключении к серверу', 'error');
+                console.error('Ошибка при отмене тестового периода:', error);
+                showAlert(`❌ Произошла ошибка при подключении к серверу: ${error.message}`, 'error');
             } finally {
                 cancelButton.disabled = false;
                 cancelButton.textContent = 'Отменить тестовый период';
