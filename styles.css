@@ -1188,12 +1188,16 @@ body {
     width: 80px;
     height: 80px;
     margin: 0 auto 24px;
-    background: linear-gradient(135deg, hsla(142, 76%, 36%, 0.6) 0%, hsla(142, 76%, 42%, 0.6) 100%);
+    background: linear-gradient(135deg, #00C853 0%, #4CAF50 100%);
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 200, 83, 0.3);
+}
+
+.trial-header-icon svg {
+    stroke: white;
 }
 
 .trial-info-box {
