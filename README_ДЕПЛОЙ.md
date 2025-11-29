@@ -77,3 +77,4 @@ git remote add origin https://github.com/hayksarkisyan96/ZZM.git
 - `ИНСТРУКЦИЯ_ДЕПЛОЯ.md` - подробная инструкция
 - `ДЕПЛОЙ_ИЗМЕНЕНИЙ.md` - примеры использования
 
+
