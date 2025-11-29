@@ -223,22 +223,31 @@ async function checkSubscriptionSynchronous(username) {
                 console.log('Все значения объекта:', Object.entries(data));
             }
             
-            // Проверяем различные форматы ответа API (более тщательно)
+            // Проверяем формат ответа API (приоритет: has_subscription из API)
             let subscriptionExists = false;
             let subscriptionReason = '';
             
-            // Если это просто boolean или строка
-            if (data === true || data === 'true' || data === 1 || data === '1') {
-                subscriptionExists = true;
-                subscriptionReason = 'boolean/string true';
-            }
-            // Если это объект
-            else if (typeof data === 'object' && data !== null) {
-                // Проверяем прямые поля
+            // Если это объект (стандартный формат ответа API)
+            if (typeof data === 'object' && data !== null) {
+                // ПРИОРИТЕТ 1: Прямое поле has_subscription из API (самый надежный способ)
                 if (data.has_subscription === true) {
                     subscriptionExists = true;
-                    subscriptionReason = 'has_subscription === true';
-                } else if (data.subscription_exists === true) {
+                    subscriptionReason = 'has_subscription === true (API)';
+                }
+                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом
+                else if (data.subscription && typeof data.subscription === 'object') {
+                    if (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE') {
+                        subscriptionExists = true;
+                        subscriptionReason = 'subscription.status === active';
+                    }
+                }
+                // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
+                else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'success === true и есть данные о подписке';
+                }
+                // ПРИОРИТЕТ 4: Проверяем другие возможные поля
+                else if (data.subscription_exists === true) {
                     subscriptionExists = true;
                     subscriptionReason = 'subscription_exists === true';
                 } else if (data.is_active === true) {
@@ -251,36 +260,11 @@ async function checkSubscriptionSynchronous(username) {
                     subscriptionExists = true;
                     subscriptionReason = 'status === active';
                 }
-                // Проверяем вложенный объект subscription
-                else if (data.subscription && typeof data.subscription === 'object') {
-                    if (data.subscription.active === true) {
-                        subscriptionExists = true;
-                        subscriptionReason = 'subscription.active === true';
-                    } else if (data.subscription.is_active === true) {
-                        subscriptionExists = true;
-                        subscriptionReason = 'subscription.is_active === true';
-                    } else if (data.subscription.status && (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE')) {
-                        subscriptionExists = true;
-                        subscriptionReason = 'subscription.status === active';
-                    }
-                }
-                // Проверяем наличие любых признаков подписки в объекте
-                if (!subscriptionExists && (data.tariff || data.tariff_name || data.expires_at || data.expiration_date)) {
-                    // Если есть информация о тарифе или дате, скорее всего это подписка
-                    subscriptionExists = true;
-                    subscriptionReason = 'наличие тарифа/даты в объекте';
-                }
-                // Проверяем любое непустое значение в объекте, которое может указывать на подписку
-                if (!subscriptionExists && Object.keys(data).length > 0) {
-                    // Если объект не пустой и не содержит явного false или null для подписки
-                    const keys = Object.keys(data);
-                    if (!keys.includes('has_subscription') || data.has_subscription !== false) {
-                        if (keys.some(k => k.toLowerCase().includes('subscription') || k.toLowerCase().includes('tariff'))) {
-                            subscriptionExists = true;
-                            subscriptionReason = 'наличие полей связанных с подпиской';
-                        }
-                    }
-                }
+            }
+            // Если это просто boolean или строка
+            else if (data === true || data === 'true' || data === 1 || data === '1') {
+                subscriptionExists = true;
+                subscriptionReason = 'boolean/string true';
             }
             // Если это массив - проверяем, не пустой ли он
             else if (Array.isArray(data) && data.length > 0) {
@@ -291,27 +275,26 @@ async function checkSubscriptionSynchronous(username) {
             console.log('Результат синхронной проверки подписки:', subscriptionExists ? 'НАЙДЕНА' : 'НЕ НАЙДЕНА', subscriptionReason ? `(${subscriptionReason})` : '');
             
             if (subscriptionExists) {
-                // Извлекаем информацию о тарифе и дате истечения
+                // Извлекаем информацию о тарифе и дате истечения (приоритет: из объекта subscription)
+                const subscription = data.subscription || data;
                 const tariffName = 
+                    subscription.tariff_name || 
+                    subscription.tariff || 
+                    subscription.tariff_id ||
                     data.tariff_name || 
                     data.tariff || 
                     data.tariff_id ||
-                    data.subscription?.tariff_name || 
-                    data.subscription?.tariff || 
-                    data.subscription?.tariff_id ||
-                    (data.subscription && typeof data.subscription === 'object' ? 
-                        (data.subscription.name || data.subscription.title) : null) ||
                     'активна';
                 
                 const expiresAt = 
+                    subscription.expires_at || 
+                    subscription.expiration_date || 
+                    subscription.expires || 
+                    subscription.end_date ||
                     data.expires_at || 
                     data.expiration_date || 
                     data.expires || 
-                    data.end_date ||
-                    data.subscription?.expires_at || 
-                    data.subscription?.expiration_date || 
-                    data.subscription?.expires ||
-                    data.subscription?.end_date;
+                    data.end_date;
                 
                 console.log('Информация о подписке:', { tariffName, expiresAt });
                 
@@ -374,33 +357,52 @@ async function checkSubscription(username) {
             console.log('Тип данных:', typeof data);
             console.log('Ключи объекта:', Object.keys(data || {}));
             
-            // Проверяем различные форматы ответа API (более тщательно)
-            const subscriptionExists = 
-                data === true || // Если API вернул просто true
-                data === 'true' || // Если строка 'true'
-                data.has_subscription === true ||
-                data.subscription_exists === true ||
-                data.is_active === true ||
-                data.active === true ||
-                data.status === 'active' ||
-                data.status === 'ACTIVE' ||
-                (typeof data === 'object' && data !== null && 
-                 (data.active || data.is_active || data.has_subscription || data.subscription_exists)) ||
-                (data.subscription && (
-                    data.subscription.active === true ||
-                    data.subscription.is_active === true ||
-                    data.subscription.status === 'active' ||
-                    data.subscription.status === 'ACTIVE'
-                )) ||
-                (Array.isArray(data) && data.length > 0); // Если массив с подписками
+            // Проверяем формат ответа API (приоритет: has_subscription из API)
+            let subscriptionExists = false;
+            
+            // Если это объект (стандартный формат ответа API)
+            if (typeof data === 'object' && data !== null) {
+                // ПРИОРИТЕТ 1: Прямое поле has_subscription из API (самый надежный способ)
+                if (data.has_subscription === true) {
+                    subscriptionExists = true;
+                }
+                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом
+                else if (data.subscription && typeof data.subscription === 'object') {
+                    if (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE') {
+                        subscriptionExists = true;
+                    }
+                }
+                // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
+                else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
+                    subscriptionExists = true;
+                }
+                // ПРИОРИТЕТ 4: Проверяем другие возможные поля
+                else if (data.subscription_exists === true || 
+                         data.is_active === true || 
+                         data.active === true ||
+                         data.status === 'active' ||
+                         data.status === 'ACTIVE') {
+                    subscriptionExists = true;
+                }
+            }
+            // Если это просто boolean или строка
+            else if (data === true || data === 'true' || data === 1 || data === '1') {
+                subscriptionExists = true;
+            }
+            // Если это массив - проверяем, не пустой ли он
+            else if (Array.isArray(data) && data.length > 0) {
+                subscriptionExists = true;
+            }
             
             console.log('Подписка найдена при вводе:', subscriptionExists);
             
             if (subscriptionExists) {
                 // Подписка существует
                 hasActiveSubscription = true;
-                const tariffName = data.tariff_name || data.tariff || data.subscription?.tariff_name || data.subscription?.tariff || 'активна';
-                const expiresAt = data.expires_at || data.expiration_date || data.subscription?.expires_at || data.subscription?.expiration_date;
+                // Извлекаем информацию о тарифе и дате (приоритет: из объекта subscription)
+                const subscription = data.subscription || data;
+                const tariffName = subscription.tariff_name || subscription.tariff || data.tariff_name || data.tariff || 'активна';
+                const expiresAt = subscription.expires_at || subscription.expiration_date || data.expires_at || data.expiration_date;
                 const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
                     year: 'numeric', 
                     month: 'long', 
@@ -508,13 +510,15 @@ paymentForm.addEventListener('submit', async (e) => {
         console.log('Результат проверки подписки:', subscriptionCheck);
     } catch (error) {
         console.error('Ошибка при проверке подписки:', error);
-        // При ошибке проверки блокируем оплату для безопасности
-        showError('Не удалось проверить статус подписки. Пожалуйста, попробуйте позже или свяжитесь с поддержкой.');
+        // При ошибке проверки НЕ блокируем оплату, но предупреждаем пользователя
+        // Это предотвратит ложные блокировки при проблемах с сетью
+        console.warn('⚠️ Не удалось проверить подписку из-за ошибки. Продолжаем оплату, но проверка будет выполнена на сервере.');
         paymentButton.disabled = false;
         updatePaymentButton();
-        return;
+        // НЕ возвращаемся - продолжаем создание платежа, сервер проверит подписку
     }
     
+    // Если проверка прошла успешно и подписка найдена - БЛОКИРУЕМ оплату
     if (subscriptionCheck && subscriptionCheck.hasSubscription === true) {
         // Подписка найдена - блокируем оплату
         console.log('❌ ПОДПИСКА НАЙДЕНА! Блокируем оплату.');
@@ -541,17 +545,17 @@ paymentForm.addEventListener('submit', async (e) => {
         subscriptionExistsAlert.style.display = 'flex';
         subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ПОДПИСКА НАЙДЕНА ===');
-        return;
+        return; // ВАЖНО: Прерываем выполнение, оплата заблокирована
     }
     
-    // Проверяем наличие активной подписки (на случай, если флаг установлен)
+    // Проверяем наличие активной подписки (на случай, если флаг установлен ранее)
     if (hasActiveSubscription === true) {
         console.log('❌ Флаг hasActiveSubscription установлен. Блокируем оплату.');
-        showError('У вас уже есть активная подписка. Повторная оплата невозможна.');
-        paymentButton.disabled = false;
+        showSubscriptionExists('У вас уже есть активная подписка. Повторная оплата невозможна.');
+        paymentButton.disabled = true;
         updatePaymentButton();
         console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ФЛАГ УСТАНОВЛЕН ===');
-        return;
+        return; // ВАЖНО: Прерываем выполнение, оплата заблокирована
     }
     
     console.log('✅ Подписка не найдена. Продолжаем создание платежа...');
