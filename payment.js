@@ -414,7 +414,7 @@ async function checkSubscription(username) {
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
                 
                 subscriptionExistsMessage.innerHTML = message;
                 subscriptionExistsAlert.style.display = 'flex';
@@ -539,7 +539,7 @@ paymentForm.addEventListener('submit', async (e) => {
         if (formattedDate) {
             message += `<br>Действует до: <strong>${formattedDate}</strong>`;
         }
-        message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+        message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
         
         subscriptionExistsMessage.innerHTML = message;
         subscriptionExistsAlert.style.display = 'flex';
@@ -691,7 +691,7 @@ paymentForm.addEventListener('submit', async (e) => {
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
                 
                 subscriptionExistsMessage.innerHTML = message || errorMsg;
                 subscriptionExistsAlert.style.display = 'flex';
@@ -778,7 +778,7 @@ paymentForm.addEventListener('submit', async (e) => {
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить подписку, свяжитесь с нами через <a href="https://t.me/HaykSarkisyan" target="_blank" style="color: inherit; text-decoration: underline;">Telegram</a>.`;
+                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
                 
                 subscriptionExistsMessage.innerHTML = message || errorMsg;
                 subscriptionExistsAlert.style.display = 'flex';
