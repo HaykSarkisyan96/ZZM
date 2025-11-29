@@ -101,13 +101,35 @@ trialForm.addEventListener('submit', async (e) => {
         
         // Успешная активация
         const successMsg = `
-            <strong>✅ Тестовый период активирован!</strong><br><br>
-            Тестовый период для <strong>@${username}</strong> действует <strong>3 дня</strong> с момента активации.<br><br>
-            <strong>📱 Чтобы начать использовать тестовый период:</strong><br>
-            1. Перейдите в нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: inherit; text-decoration: underline; font-weight: 600;">Telegram бота</a><br>
-            2. Нажмите команду <strong>/start</strong><br>
-            3. Загрузите Excel файл и получите заявку!<br><br>
-            💡 Вы получите уведомление за 1 день до окончания тестового периода.
+            <div style="line-height: 1.8;">
+                <div style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #00C853;">
+                    ✅ Тестовый период активирован!
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 16px; background: rgba(0, 200, 83, 0.1); border-radius: 8px; border-left: 4px solid #00C853;">
+                    Тестовый период для <strong>@${username}</strong> действует <strong>3 дня</strong> с момента активации.
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <strong style="font-size: 16px;">📱 Чтобы начать использовать тестовый период:</strong>
+                </div>
+                
+                <ol style="margin: 0 0 24px 20px; padding: 0; line-height: 2;">
+                    <li style="margin-bottom: 8px;">
+                        Перейдите в нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: 600;">Telegram бота</a>
+                    </li>
+                    <li style="margin-bottom: 8px;">
+                        Нажмите команду <strong>/start</strong>
+                    </li>
+                    <li style="margin-bottom: 8px;">
+                        Загрузите Excel файл и получите заявку!
+                    </li>
+                </ol>
+                
+                <div style="margin-top: 24px; padding: 12px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; font-size: 14px; color: rgba(26, 26, 46, 0.8);">
+                    💡 Вы получите уведомление за 1 день до окончания тестового периода.
+                </div>
+            </div>
         `;
         showSuccess(successMsg);
         
