@@ -1200,33 +1200,10 @@ body {
     stroke: white;
 }
 
-.trial-form-wrapper {
-    max-width: 600px;
-    margin: 0 auto;
-    margin-top: 32px;
-}
-
 .trial-page {
-    padding-top: 96px;
-}
-
-.trial-page .payment-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.trial-page .payment-header {
-    margin-bottom: 32px;
-}
-
-@media (max-width: 768px) {
-    .trial-form-wrapper {
-        margin-top: 24px;
-    }
-    
-    .trial-page .payment-header {
-        margin-bottom: 24px;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .trial-info-box {
