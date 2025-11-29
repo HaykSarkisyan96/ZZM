@@ -46,3 +46,5 @@ echo "   git add ."
 echo "   git commit -m 'Обновления: раздел программ и проверка подписки'"
 echo "   git push origin main"
 
+
+
