@@ -1,6 +1,9 @@
 // API endpoint для создания платежа
 const API_URL = 'https://new-landing-production.up.railway.app/api';
 
+// Username Telegram бота
+const BOT_USERNAME = 'MoreVkusovBot';
+
 // DOM элементы
 const tariffCards = document.querySelectorAll('.tariff-card');
 const paymentForm = document.getElementById('paymentForm');
@@ -414,7 +417,7 @@ async function checkSubscription(username) {
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
+                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: inherit; text-decoration: underline;">Telegram бота</a>, используя функцию "Сменить тариф".`;
                 
                 subscriptionExistsMessage.innerHTML = message;
                 subscriptionExistsAlert.style.display = 'flex';
@@ -691,7 +694,7 @@ paymentForm.addEventListener('submit', async (e) => {
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
+                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: inherit; text-decoration: underline;">Telegram бота</a>, используя функцию "Сменить тариф".`;
                 
                 subscriptionExistsMessage.innerHTML = message || errorMsg;
                 subscriptionExistsAlert.style.display = 'flex';
@@ -778,7 +781,7 @@ paymentForm.addEventListener('submit', async (e) => {
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
+                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: inherit; text-decoration: underline;">Telegram бота</a>, используя функцию "Сменить тариф".`;
                 
                 subscriptionExistsMessage.innerHTML = message || errorMsg;
                 subscriptionExistsAlert.style.display = 'flex';
