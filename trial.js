@@ -103,31 +103,28 @@ trialForm.addEventListener('submit', async (e) => {
         const successMsg = `
             <div style="line-height: 1.8;">
                 <div style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #00C853;">
-                    ✅ Тестовый период активирован!
+                    🎉 Тестовый период активирован
                 </div>
                 
                 <div style="margin-bottom: 24px; padding: 16px; background: rgba(0, 200, 83, 0.1); border-radius: 8px; border-left: 4px solid #00C853;">
-                    Тестовый период для <strong>@${username}</strong> действует <strong>3 дня</strong> с момента активации.
+                    Для <strong>@${username}</strong> доступ открыт на <strong>3 дня</strong> с момента активации.
                 </div>
                 
-                <div style="margin-bottom: 16px;">
-                    <strong style="font-size: 16px;">📱 Чтобы начать использовать тестовый период:</strong>
+                <div style="margin-bottom: 24px; color: rgba(26, 26, 46, 0.8);">
+                    Можете сразу загрузить Excel-файл и получить первую заявку. В Telegram мы отправили напоминание и ссылку на инструкции.
                 </div>
                 
-                <ol style="margin: 0 0 24px 20px; padding: 0; line-height: 2;">
-                    <li style="margin-bottom: 8px;">
-                        Перейдите в нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: 600;">Telegram бота</a>
-                    </li>
-                    <li style="margin-bottom: 8px;">
-                        Нажмите команду <strong>/start</strong>
-                    </li>
-                    <li style="margin-bottom: 8px;">
-                        Загрузите Excel файл и получите заявку!
-                    </li>
-                </ol>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <a href="calculate.html" class="payment-button" style="flex: 1 1 220px; text-align: center;">
+                        Перейти к загрузке файла
+                    </a>
+                    <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="flex: 1 1 220px; text-align: center; border: 1px solid rgba(26, 26, 46, 0.2); padding: 14px 16px; border-radius: 12px; font-weight: 600; color: #1A1A2E; text-decoration: none;">
+                        Открыть Telegram бота
+                    </a>
+                </div>
                 
                 <div style="margin-top: 24px; padding: 12px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; font-size: 14px; color: rgba(26, 26, 46, 0.8);">
-                    💡 Вы получите уведомление за 1 день до окончания тестового периода.
+                    💡 Напомним в Telegram за 1 день до окончания теста.
                 </div>
             </div>
         `;
