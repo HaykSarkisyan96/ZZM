@@ -643,8 +643,18 @@ paymentForm.addEventListener('submit', async (e) => {
         // ВАЖНО: Проверяем ошибку о существующей подписке ДО проверки success
         if (!response.ok || !data.success) {
             const errorMsg = data.error || data.message || 'Ошибка при создании платежа';
-            console.log('Ошибка создания платежа:', errorMsg);
+            const errorType = data.error_type || '';
+            console.log('Ошибка создания платежа:', errorMsg, 'Тип:', errorType);
             console.log('Полный ответ API (ошибка):', JSON.stringify(data, null, 2));
+            
+            // Специальная обработка таймаута
+            if (errorType === 'timeout' || response.status === 504) {
+                showError('Превышено время ожидания ответа от платежной системы. Пожалуйста, попробуйте еще раз или используйте оплату по реквизитам.');
+                showManualPayment();
+                paymentButton.disabled = false;
+                updatePaymentButton();
+                return;
+            }
             
             // Проверяем, не связана ли ошибка с существующей подпиской
             const errorText = (errorMsg || '').toLowerCase();
@@ -787,7 +797,19 @@ paymentForm.addEventListener('submit', async (e) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        showError('Не удалось создать платеж. Проверьте подключение к интернету и попробуйте снова.');
+        
+        // Проверяем тип ошибки
+        let errorMessage = 'Не удалось создать платеж. ';
+        if (error.message && error.message.includes('timeout')) {
+            errorMessage += 'Превышено время ожидания ответа от сервера. Пожалуйста, попробуйте еще раз или используйте оплату по реквизитам.';
+            showManualPayment();
+        } else if (error.message && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
+            errorMessage += 'Проблема с подключением к интернету. Проверьте соединение и попробуйте снова.';
+        } else {
+            errorMessage += 'Проверьте подключение к интернету и попробуйте снова.';
+        }
+        
+        showError(errorMessage);
         paymentButton.disabled = false;
         updatePaymentButton();
     }
