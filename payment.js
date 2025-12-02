@@ -610,23 +610,46 @@ paymentForm.addEventListener('submit', async (e) => {
         });
         
         // Создаем платеж через API
-        const response = await fetch(`${API_URL}/create_payment`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(paymentData)
-        });
+        console.log('Отправляем запрос на создание платежа...');
+        let response;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000); // Таймаут 120 секунд (2 минуты)
         
-        console.log('Ответ сервера:', response.status, response.statusText);
+        try {
+            response = await fetch(`${API_URL}/create_payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(paymentData),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            console.log('Ответ сервера получен:', response.status, response.statusText);
+        } catch (fetchError) {
+            clearTimeout(timeoutId);
+            console.error('Ошибка при запросе к API:', fetchError);
+            if (fetchError.name === 'AbortError' || fetchError.message.includes('aborted')) {
+                showError('Превышено время ожидания ответа от сервера. Пожалуйста, попробуйте еще раз или используйте оплату по реквизитам.');
+                showManualPayment();
+            } else {
+                showError('Ошибка при подключении к серверу. Проверьте подключение к интернету и попробуйте снова.');
+            }
+            paymentButton.disabled = false;
+            updatePaymentButton();
+            return;
+        }
         
         let data;
         try {
-            data = await response.json();
+            const responseText = await response.text();
+            console.log('Текст ответа от сервера:', responseText);
+            data = JSON.parse(responseText);
+            console.log('Распарсенные данные:', data);
         } catch (e) {
             console.error('Ошибка парсинга JSON ответа при создании платежа:', e);
-            const textResponse = await response.text();
-            console.log('Текст ответа (не JSON):', textResponse);
+            console.log('Статус ответа:', response.status);
+            console.log('Заголовки ответа:', Object.fromEntries(response.headers.entries()));
             showError('Ошибка при создании платежа. Попробуйте еще раз.');
             paymentButton.disabled = false;
             updatePaymentButton();
@@ -701,12 +724,25 @@ paymentForm.addEventListener('submit', async (e) => {
                 updatePaymentButton();
                 paymentButton.disabled = false;
                 // НЕ возвращаемся - продолжаем, но API должен обработать смену тарифа
+            } else {
+                // Если это не ошибка подписки и не таймаут, показываем ошибку
+                console.log('❌ Ошибка создания платежа (не подписка, не таймаут):', errorMsg);
+                showError(errorMsg);
+                paymentButton.disabled = false;
+                updatePaymentButton();
+                return;
             }
         }
         
+        console.log('Проверка успешного ответа: response.ok =', response.ok, 'data.success =', data.success);
+        
         if (response.ok && data.success) {
+            console.log('✅ Успешный ответ получен, обрабатываем...');
+            console.log('confirmation_token:', data.confirmation_token ? 'присутствует' : 'отсутствует');
+            
             // Проверяем, есть ли настоящий confirmation_token (не тестовый)
             if (data.confirmation_token && !data.confirmation_token.startsWith('test_token_')) {
+                console.log('Инициализируем виджет ЮKassa...');
                 // Инициализируем виджет ЮKassa
                 try {
                     const checkout = new window.YooMoneyCheckoutWidget({
@@ -721,13 +757,16 @@ paymentForm.addEventListener('submit', async (e) => {
                         }
                     });
                     
+                    console.log('Виджет создан, отображаем...');
                     // Отображаем виджет
                     checkout.render('yookassa-widget-container');
                     yookassaWidgetContainer.style.display = 'block';
                     paymentForm.style.display = 'none';
                     
+                    console.log('Виджет отображен, прокручиваем...');
                     // Прокручиваем к виджету
                     yookassaWidgetContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    console.log('✅ Виджет успешно инициализирован и отображен');
                 } catch (error) {
                     console.error('Error initializing YooMoney widget:', error);
                     showError('Не удалось загрузить форму оплаты. Используйте оплату по реквизитам.');
