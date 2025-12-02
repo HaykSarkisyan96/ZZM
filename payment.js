@@ -740,10 +740,24 @@ paymentForm.addEventListener('submit', async (e) => {
         if (response.ok && data.success) {
             console.log('✅ Успешный ответ получен, обрабатываем...');
             console.log('confirmation_token:', data.confirmation_token ? `присутствует (${data.confirmation_token.substring(0, 20)}...)` : 'отсутствует');
+            console.log('Полный ответ API:', JSON.stringify(data, null, 2));
+            console.log('yookassa_shop_id_configured:', data.yookassa_shop_id_configured);
+            console.log('yookassa_secret_key_configured:', data.yookassa_secret_key_configured);
+            
+            // Проверяем, что виджет YooMoney загружен
+            if (typeof window.YooMoneyCheckoutWidget === 'undefined') {
+                console.error('❌ YooMoneyCheckoutWidget не загружен! Проверьте, что скрипт https://yookassa.ru/checkout-widget/v1/checkout-widget.js загружен.');
+                showError('Виджет оплаты не загружен. Обновите страницу и попробуйте снова.');
+                showManualPayment();
+                paymentButton.disabled = false;
+                updatePaymentButton();
+                return;
+            }
             
             // Проверяем, есть ли настоящий confirmation_token (не тестовый)
             if (data.confirmation_token && !data.confirmation_token.startsWith('test_token_')) {
                 console.log('✅ Настоящий confirmation_token получен, инициализируем виджет...');
+                console.log('confirmation_token (полный):', data.confirmation_token);
                 console.log('Инициализируем виджет ЮKassa...');
                 // Инициализируем виджет ЮKassa
                 try {
@@ -752,6 +766,7 @@ paymentForm.addEventListener('submit', async (e) => {
                         return_url: 'https://hayksarkisyan96.github.io/ZZM/payment-success.html',
                         error_callback: function(error) {
                             console.error('YooMoney widget error:', error);
+                            console.error('Детали ошибки виджета:', JSON.stringify(error, null, 2));
                             showError('Ошибка при инициализации платежа. Попробуйте еще раз или используйте оплату по реквизитам.');
                             showManualPayment();
                             paymentButton.disabled = false;
@@ -771,6 +786,7 @@ paymentForm.addEventListener('submit', async (e) => {
                     console.log('✅ Виджет успешно инициализирован и отображен');
                 } catch (error) {
                     console.error('Error initializing YooMoney widget:', error);
+                    console.error('Стек ошибки:', error.stack);
                     showError('Не удалось загрузить форму оплаты. Используйте оплату по реквизитам.');
                     showManualPayment();
                     paymentButton.disabled = false;
@@ -780,6 +796,8 @@ paymentForm.addEventListener('submit', async (e) => {
                 // Тестовый режим или ключи не настроены - показываем реквизиты
                 console.warn('⚠️ confirmation_token отсутствует или тестовый:', data.confirmation_token);
                 console.warn('Полный ответ API:', JSON.stringify(data, null, 2));
+                console.warn('yookassa_shop_id_configured:', data.yookassa_shop_id_configured);
+                console.warn('yookassa_secret_key_configured:', data.yookassa_secret_key_configured);
                 showError('Автоматическая оплата временно недоступна. Используйте оплату по реквизитам.');
                 showManualPayment();
                 paymentButton.disabled = false;
