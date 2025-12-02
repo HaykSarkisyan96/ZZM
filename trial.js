@@ -111,15 +111,12 @@ trialForm.addEventListener('submit', async (e) => {
                 </div>
                 
                 <div style="margin-bottom: 24px; color: rgba(26, 26, 46, 0.8);">
-                    Можете сразу загрузить Excel-файл и получить первую заявку. В Telegram мы отправили напоминание и ссылку на инструкции.
+                    Можете сразу загрузить Excel-файл и получить первую заявку.
                 </div>
                 
                 <div style="display: flex; flex-wrap: wrap; gap: 12px;">
                     <a href="calculate.html" class="payment-button" style="flex: 1 1 220px; text-align: center;">
                         Перейти к загрузке файла
-                    </a>
-                    <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="flex: 1 1 220px; text-align: center; border: 1px solid rgba(26, 26, 46, 0.2); padding: 14px 16px; border-radius: 12px; font-weight: 600; color: #1A1A2E; text-decoration: none;">
-                        Открыть Telegram бота
                     </a>
                 </div>
                 
