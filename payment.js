@@ -735,13 +735,15 @@ paymentForm.addEventListener('submit', async (e) => {
         }
         
         console.log('Проверка успешного ответа: response.ok =', response.ok, 'data.success =', data.success);
+        console.log('Полные данные ответа:', JSON.stringify(data, null, 2));
         
         if (response.ok && data.success) {
             console.log('✅ Успешный ответ получен, обрабатываем...');
-            console.log('confirmation_token:', data.confirmation_token ? 'присутствует' : 'отсутствует');
+            console.log('confirmation_token:', data.confirmation_token ? `присутствует (${data.confirmation_token.substring(0, 20)}...)` : 'отсутствует');
             
             // Проверяем, есть ли настоящий confirmation_token (не тестовый)
             if (data.confirmation_token && !data.confirmation_token.startsWith('test_token_')) {
+                console.log('✅ Настоящий confirmation_token получен, инициализируем виджет...');
                 console.log('Инициализируем виджет ЮKassa...');
                 // Инициализируем виджет ЮKassa
                 try {
@@ -776,12 +778,20 @@ paymentForm.addEventListener('submit', async (e) => {
                 }
             } else {
                 // Тестовый режим или ключи не настроены - показываем реквизиты
+                console.warn('⚠️ confirmation_token отсутствует или тестовый:', data.confirmation_token);
+                console.warn('Полный ответ API:', JSON.stringify(data, null, 2));
                 showError('Автоматическая оплата временно недоступна. Используйте оплату по реквизитам.');
                 showManualPayment();
                 paymentButton.disabled = false;
                 updatePaymentButton();
             }
         } else {
+            // Ответ не успешный
+            console.error('❌ Ответ не успешный:', {
+                status: response.status,
+                ok: response.ok,
+                data: data
+            });
             const errorMsg = data.error || data.message || 'Ошибка при создании платежа';
             console.log('Ошибка создания платежа:', errorMsg);
             console.log('Полный ответ API:', JSON.stringify(data, null, 2));
