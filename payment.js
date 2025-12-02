@@ -102,12 +102,10 @@ function updatePaymentButton() {
     const hasUsername = telegramUsernameInput.value.trim().length > 0;
     const hasTariff = selectedTariff !== null;
     
-    // Блокируем кнопку, если есть активная подписка
-    paymentButton.disabled = !hasUsername || !hasTariff || hasActiveSubscription;
+    // НЕ блокируем кнопку при наличии подписки - разрешаем смену тарифа
+    paymentButton.disabled = !hasUsername || !hasTariff;
     
-    if (hasActiveSubscription) {
-        paymentButtonText.textContent = 'У вас уже есть подписка';
-    } else if (hasTariff && hasUsername) {
+    if (hasTariff && hasUsername) {
         paymentButtonText.textContent = `Оплатить ${selectedTariff.price} ₽`;
     } else if (hasTariff) {
         paymentButtonText.textContent = 'Укажите Telegram username';
@@ -400,8 +398,8 @@ async function checkSubscription(username) {
             console.log('Подписка найдена при вводе:', subscriptionExists);
             
             if (subscriptionExists) {
-                // Подписка существует
-                hasActiveSubscription = true;
+                // Подписка существует - показываем информацию, но НЕ блокируем оплату
+                hasActiveSubscription = false; // НЕ блокируем, разрешаем смену тарифа
                 // Извлекаем информацию о тарифе и дате (приоритет: из объекта subscription)
                 const subscription = data.subscription || data;
                 const tariffName = subscription.tariff_name || subscription.tariff || data.tariff_name || data.tariff || 'активна';
@@ -412,19 +410,19 @@ async function checkSubscription(username) {
                     day: 'numeric' 
                 }) : '';
                 
-                let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
-                message += `Тариф: <strong>${tariffName}</strong>`;
+                let message = `<strong>ℹ️ У вас уже есть активная подписка</strong><br>`;
+                message += `Текущий тариф: <strong>${tariffName}</strong>`;
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: inherit; text-decoration: underline;">Telegram бота</a>, используя функцию "Сменить тариф".`;
+                message += `<br><br>Вы можете выбрать новый тариф и оплатить его - подписка будет обновлена автоматически.`;
                 
                 subscriptionExistsMessage.innerHTML = message;
                 subscriptionExistsAlert.style.display = 'flex';
                 errorAlert.style.display = 'none';
                 successAlert.style.display = 'none';
                 
-                // Блокируем кнопку оплаты
+                // НЕ блокируем кнопку оплаты - разрешаем смену тарифа
                 updatePaymentButton();
             } else {
                 // Подписки нет
@@ -521,13 +519,11 @@ paymentForm.addEventListener('submit', async (e) => {
         // НЕ возвращаемся - продолжаем создание платежа, сервер проверит подписку
     }
     
-    // Если проверка прошла успешно и подписка найдена - БЛОКИРУЕМ оплату
+    // Если проверка прошла успешно и подписка найдена - показываем информацию, но НЕ блокируем
     if (subscriptionCheck && subscriptionCheck.hasSubscription === true) {
-        // Подписка найдена - блокируем оплату
-        console.log('❌ ПОДПИСКА НАЙДЕНА! Блокируем оплату.');
-        hasActiveSubscription = true;
-        paymentButton.disabled = true;
-        updatePaymentButton();
+        // Подписка найдена - показываем информацию, но разрешаем смену тарифа
+        console.log('ℹ️ ПОДПИСКА НАЙДЕНА! Разрешаем смену тарифа.');
+        hasActiveSubscription = false; // НЕ блокируем
         
         const tariffName = subscriptionCheck.tariffName || 'активна';
         const expiresAt = subscriptionCheck.expiresAt;
@@ -537,32 +533,22 @@ paymentForm.addEventListener('submit', async (e) => {
             day: 'numeric' 
         }) : '';
         
-        let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
-        message += `Тариф: <strong>${tariffName}</strong>`;
+        let message = `<strong>ℹ️ У вас уже есть активная подписка</strong><br>`;
+        message += `Текущий тариф: <strong>${tariffName}</strong>`;
         if (formattedDate) {
             message += `<br>Действует до: <strong>${formattedDate}</strong>`;
         }
-        message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего Telegram бота, используя функцию "Сменить тариф".`;
+        message += `<br><br>Вы можете выбрать новый тариф и оплатить его - подписка будет обновлена автоматически.`;
         
         subscriptionExistsMessage.innerHTML = message;
         subscriptionExistsAlert.style.display = 'flex';
         subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ПОДПИСКА НАЙДЕНА ===');
-        return; // ВАЖНО: Прерываем выполнение, оплата заблокирована
+        console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ПОДПИСКА НАЙДЕНА, РАЗРЕШАЕМ СМЕНУ ===');
+        // НЕ возвращаемся - продолжаем создание платежа для смены тарифа
     }
     
-    // Проверяем наличие активной подписки (на случай, если флаг установлен ранее)
-    if (hasActiveSubscription === true) {
-        console.log('❌ Флаг hasActiveSubscription установлен. Блокируем оплату.');
-        showSubscriptionExists('У вас уже есть активная подписка. Повторная оплата невозможна.');
-        paymentButton.disabled = true;
-        updatePaymentButton();
-        console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ФЛАГ УСТАНОВЛЕН ===');
-        return; // ВАЖНО: Прерываем выполнение, оплата заблокирована
-    }
-    
-    console.log('✅ Подписка не найдена. Продолжаем создание платежа...');
-    console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ПОДПИСКИ НЕТ ===');
+    console.log('✅ Продолжаем создание платежа...');
+    console.log('=== ПРОВЕРКА ЗАВЕРШЕНА ===');
     
     // Нормализуем номер телефона (если указан)
     let normalizedPhone = null;
@@ -674,9 +660,12 @@ paymentForm.addEventListener('submit', async (e) => {
                 (data.subscription_exists === true) ||
                 (data.subscription && data.subscription.active === true);
             
+            // НЕ блокируем оплату при наличии подписки - API должен обработать смену тарифа
+            // Если API вернул ошибку о подписке, это может быть старая версия API
+            // Показываем ошибку, но не блокируем полностью
             if (subscriptionError) {
-                console.log('API сообщает о существующей подписке. Блокируем оплату.');
-                hasActiveSubscription = true;
+                console.log('API сообщает о существующей подписке. Показываем предупреждение, но не блокируем.');
+                hasActiveSubscription = false; // НЕ блокируем
                 
                 // Пытаемся получить информацию о подписке из ответа
                 const tariffName = data.tariff_name || data.tariff || 'активна';
@@ -687,21 +676,21 @@ paymentForm.addEventListener('submit', async (e) => {
                     day: 'numeric' 
                 }) : '';
                 
-                let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
+                let message = `<strong>ℹ️ У вас уже есть активная подписка</strong><br>`;
                 if (tariffName !== 'активна') {
-                    message += `Тариф: <strong>${tariffName}</strong>`;
+                    message += `Текущий тариф: <strong>${tariffName}</strong>`;
                 }
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: inherit; text-decoration: underline;">Telegram бота</a>, используя функцию "Сменить тариф".`;
+                message += `<br><br>Вы можете выбрать новый тариф и оплатить его - подписка будет обновлена автоматически.`;
                 
                 subscriptionExistsMessage.innerHTML = message || errorMsg;
                 subscriptionExistsAlert.style.display = 'flex';
                 subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 updatePaymentButton();
                 paymentButton.disabled = false;
-                return;
+                // НЕ возвращаемся - продолжаем, но API должен обработать смену тарифа
             }
         }
         
@@ -761,9 +750,10 @@ paymentForm.addEventListener('submit', async (e) => {
                 (data.has_subscription === true) ||
                 (data.subscription_exists === true);
             
+            // НЕ блокируем оплату при наличии подписки - API должен обработать смену тарифа
             if (subscriptionError) {
-                console.log('API сообщает о существующей подписке. Блокируем оплату.');
-                hasActiveSubscription = true;
+                console.log('API сообщает о существующей подписке. Показываем предупреждение, но не блокируем.');
+                hasActiveSubscription = false; // НЕ блокируем
                 
                 // Пытаемся получить информацию о подписке из ответа
                 const tariffName = data.tariff_name || data.tariff || 'активна';
@@ -774,19 +764,20 @@ paymentForm.addEventListener('submit', async (e) => {
                     day: 'numeric' 
                 }) : '';
                 
-                let message = `<strong>✅ У вас уже есть активная подписка</strong><br>`;
+                let message = `<strong>ℹ️ У вас уже есть активная подписка</strong><br>`;
                 if (tariffName !== 'активна') {
-                    message += `Тариф: <strong>${tariffName}</strong>`;
+                    message += `Текущий тариф: <strong>${tariffName}</strong>`;
                 }
                 if (formattedDate) {
                     message += `<br>Действует до: <strong>${formattedDate}</strong>`;
                 }
-                message += `<br><br>Если вам нужно продлить или изменить тариф, сделайте это через нашего <a href="https://t.me/${BOT_USERNAME}" target="_blank" style="color: inherit; text-decoration: underline;">Telegram бота</a>, используя функцию "Сменить тариф".`;
+                message += `<br><br>Вы можете выбрать новый тариф и оплатить его - подписка будет обновлена автоматически.`;
                 
                 subscriptionExistsMessage.innerHTML = message || errorMsg;
                 subscriptionExistsAlert.style.display = 'flex';
                 subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 updatePaymentButton();
+                // НЕ показываем ошибку, показываем только информационное сообщение
             } else {
                 showError(errorMsg);
             }
