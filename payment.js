@@ -273,7 +273,35 @@ async function checkSubscriptionSynchronous(username) {
                 subscriptionReason = 'непустой массив';
             }
             
+            // Проверяем тестовый период (приоритет перед подпиской)
+            let hasTrial = false;
+            let trialExpiresAt = null;
+            
+            if (typeof data === 'object' && data !== null) {
+                // Проверяем различные варианты полей тестового периода
+                if (data.has_trial === true || data.trial_active === true || data.is_trial === true) {
+                    hasTrial = true;
+                    trialExpiresAt = data.trial_expires_at || data.trial_expiration_date || data.trial_expires || data.trial_end_date;
+                } else if (data.trial && typeof data.trial === 'object') {
+                    if (data.trial.active === true || data.trial.status === 'active' || data.trial.status === 'ACTIVE') {
+                        hasTrial = true;
+                        trialExpiresAt = data.trial.expires_at || data.trial.expiration_date || data.trial.expires || data.trial.end_date;
+                    }
+                }
+            }
+            
             console.log('Результат синхронной проверки подписки:', subscriptionExists ? 'НАЙДЕНА' : 'НЕ НАЙДЕНА', subscriptionReason ? `(${subscriptionReason})` : '');
+            console.log('Результат проверки тестового периода:', hasTrial ? 'АКТИВЕН' : 'НЕ АКТИВЕН');
+            
+            // Если есть тестовый период, возвращаем информацию о нем
+            if (hasTrial) {
+                console.log('Тестовый период активен, дата окончания:', trialExpiresAt);
+                return {
+                    hasSubscription: false,
+                    hasTrial: true,
+                    trialExpiresAt: trialExpiresAt
+                };
+            }
             
             if (subscriptionExists) {
                 // Извлекаем информацию о тарифе и дате истечения (приоритет: из объекта subscription)
@@ -395,9 +423,51 @@ async function checkSubscription(username) {
                 subscriptionExists = true;
             }
             
-            console.log('Подписка найдена при вводе:', subscriptionExists);
+            // Проверяем тестовый период (приоритет перед подпиской)
+            let hasTrial = false;
+            let trialExpiresAt = null;
             
-            if (subscriptionExists) {
+            if (typeof data === 'object' && data !== null) {
+                // Проверяем различные варианты полей тестового периода
+                if (data.has_trial === true || data.trial_active === true || data.is_trial === true) {
+                    hasTrial = true;
+                    trialExpiresAt = data.trial_expires_at || data.trial_expiration_date || data.trial_expires || data.trial_end_date;
+                } else if (data.trial && typeof data.trial === 'object') {
+                    if (data.trial.active === true || data.trial.status === 'active' || data.trial.status === 'ACTIVE') {
+                        hasTrial = true;
+                        trialExpiresAt = data.trial.expires_at || data.trial.expiration_date || data.trial.expires || data.trial.end_date;
+                    }
+                }
+            }
+            
+            console.log('Подписка найдена при вводе:', subscriptionExists);
+            console.log('Тестовый период найден при вводе:', hasTrial);
+            
+            // Если есть тестовый период, показываем специальное сообщение
+            if (hasTrial) {
+                hasActiveSubscription = false; // НЕ блокируем, но предупреждаем
+                const formattedDate = trialExpiresAt ? new Date(trialExpiresAt).toLocaleDateString('ru-RU', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }) : '';
+                
+                let message = `<strong>⚠️ У вас активен тестовый период</strong><br>`;
+                if (formattedDate) {
+                    message += `Тестовый период действует до: <strong>${formattedDate}</strong><br>`;
+                } else {
+                    message += `Тестовый период активен<br>`;
+                }
+                message += `<br>Вы можете оплатить тариф сейчас - он активируется после окончания тестового периода.`;
+                
+                subscriptionExistsMessage.innerHTML = message;
+                subscriptionExistsAlert.style.display = 'flex';
+                errorAlert.style.display = 'none';
+                successAlert.style.display = 'none';
+                
+                // НЕ блокируем кнопку оплаты - разрешаем оплату
+                updatePaymentButton();
+            } else if (subscriptionExists) {
                 // Подписка существует - показываем информацию, но НЕ блокируем оплату
                 hasActiveSubscription = false; // НЕ блокируем, разрешаем смену тарифа
                 // Извлекаем информацию о тарифе и дате (приоритет: из объекта subscription)
@@ -519,8 +589,35 @@ paymentForm.addEventListener('submit', async (e) => {
         // НЕ возвращаемся - продолжаем создание платежа, сервер проверит подписку
     }
     
+    // Если проверка прошла успешно и тестовый период найден - показываем предупреждение
+    if (subscriptionCheck && subscriptionCheck.hasTrial === true) {
+        // Тестовый период активен - показываем предупреждение, но разрешаем оплату
+        console.log('⚠️ ТЕСТОВЫЙ ПЕРИОД АКТИВЕН! Показываем предупреждение.');
+        hasActiveSubscription = false; // НЕ блокируем
+        
+        const trialExpiresAt = subscriptionCheck.trialExpiresAt;
+        const formattedDate = trialExpiresAt ? new Date(trialExpiresAt).toLocaleDateString('ru-RU', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        }) : '';
+        
+        let message = `<strong>⚠️ У вас активен тестовый период</strong><br>`;
+        if (formattedDate) {
+            message += `Тестовый период действует до: <strong>${formattedDate}</strong><br>`;
+        } else {
+            message += `Тестовый период активен<br>`;
+        }
+        message += `<br>Вы можете оплатить тариф сейчас - он активируется после окончания тестового периода.`;
+        
+        subscriptionExistsMessage.innerHTML = message;
+        subscriptionExistsAlert.style.display = 'flex';
+        subscriptionExistsAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        console.log('=== ПРОВЕРКА ЗАВЕРШЕНА: ТЕСТОВЫЙ ПЕРИОД АКТИВЕН, РАЗРЕШАЕМ ОПЛАТУ ===');
+        // НЕ возвращаемся - продолжаем создание платежа
+    }
     // Если проверка прошла успешно и подписка найдена - показываем информацию, но НЕ блокируем
-    if (subscriptionCheck && subscriptionCheck.hasSubscription === true) {
+    else if (subscriptionCheck && subscriptionCheck.hasSubscription === true) {
         // Подписка найдена - показываем информацию, но разрешаем смену тарифа
         console.log('ℹ️ ПОДПИСКА НАЙДЕНА! Разрешаем смену тарифа.');
         hasActiveSubscription = false; // НЕ блокируем
