@@ -454,14 +454,20 @@ function initEventListeners() {
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM загружен, начинаем инициализацию...');
+    
     // Инициализируем DOM элементы
     if (!initDOMElements()) {
         console.error('Ошибка инициализации DOM элементов');
+        alert('Ошибка загрузки страницы. Пожалуйста, обновите страницу.');
         return;
     }
     
+    console.log('DOM элементы инициализированы');
+    
     // Инициализируем обработчики событий
     initEventListeners();
+    console.log('Обработчики событий инициализированы');
     
     // Обработка клика на dropzone (для надежности)
     fileDropzone.addEventListener('click', (e) => {
@@ -470,11 +476,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         // Программно вызываем клик на input
+        console.log('Клик на dropzone, открываем диалог выбора файла');
         fileInput.click();
     });
     
     // Загружаем сохраненные данные и обновляем кнопку
     loadSavedData();
     updateSubmitButton();
+    console.log('Инициализация завершена');
 });
 
