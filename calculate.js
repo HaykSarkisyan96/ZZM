@@ -404,6 +404,16 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
+// Обработка клика на dropzone (для надежности)
+fileDropzone.addEventListener('click', (e) => {
+    // Если клик был на кнопке удаления файла, не открываем диалог
+    if (e.target.closest('#fileRemove')) {
+        return;
+    }
+    // Программно вызываем клик на input
+    fileInput.click();
+});
+
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     loadSavedData();
