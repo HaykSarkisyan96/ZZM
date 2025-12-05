@@ -430,13 +430,19 @@ async function checkSubscription(username) {
                 }
             }
             
+            console.log('=== ОТЛАДКА ПРОВЕРКИ ТЕСТОВОГО ПЕРИОДА ===');
             console.log('Тестовый период найден при вводе:', hasTrial);
-            if (hasTrial && data.subscription) {
-                console.log('Данные тестового периода:', {
-                    is_trial: data.subscription.is_trial,
-                    trial_ends_at: data.subscription.trial_ends_at
-                });
+            console.log('Полный ответ API:', JSON.stringify(data, null, 2));
+            console.log('data.subscription:', data.subscription);
+            if (data.subscription) {
+                console.log('data.subscription.is_trial:', data.subscription.is_trial, 'тип:', typeof data.subscription.is_trial);
+                console.log('data.subscription.trial_ends_at:', data.subscription.trial_ends_at);
+                console.log('data.subscription.status:', data.subscription.status);
             }
+            console.log('Проверка условий:');
+            console.log('  data.subscription?.is_trial === true:', data.subscription?.is_trial === true);
+            console.log('  data.subscription?.is_trial === 1:', data.subscription?.is_trial === 1);
+            console.log('=== КОНЕЦ ОТЛАДКИ ===');
             
             // Если есть тестовый период, показываем специальное сообщение
             if (hasTrial) {
