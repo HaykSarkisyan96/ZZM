@@ -182,16 +182,17 @@ function initEventListeners() {
     
     // Обработка изменения файла
     fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const fileExtension = file.name.split('.').pop()?.toLowerCase();
-        if (fileExtension === 'xlsx' || fileExtension === 'xls') {
-            showFilePreview(file);
-            hideAlerts();
-            updateSubmitButton();
-        } else {
-            showError('Пожалуйста, загрузите файл формата .xlsx или .xls');
-            hideFilePreview();
+        const file = e.target.files[0];
+        if (file) {
+            const fileExtension = file.name.split('.').pop()?.toLowerCase();
+            if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+                showFilePreview(file);
+                hideAlerts();
+                updateSubmitButton();
+            } else {
+                showError('Пожалуйста, загрузите файл формата .xlsx или .xls');
+                hideFilePreview();
+            }
         }
     });
 
