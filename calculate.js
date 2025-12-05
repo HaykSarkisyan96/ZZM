@@ -293,18 +293,15 @@ form.addEventListener('submit', async (e) => {
             let messageHTML;
             if (data.message) {
                 // Используем сообщение из API (там уже правильный текст)
+                // Заменяем @username на кликабельную ссылку
+                const messageWithLink = data.message.replace(
+                    new RegExp(`@${botUsername}`, 'g'),
+                    `<a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">@${botUsername}</a>`
+                );
+                
                 messageHTML = `
-                    <span style="font-weight: 600;">${data.message}</span>
-                    ${!autoSent ? `<br><span>
-                        <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
-                            Открыть бота @${botUsername}
-                            <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                    </span>` : `<br><span>
+                    <span style="font-weight: 600;">${messageWithLink}</span>
+                    ${autoSent ? `<br><span>
                         <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
                             Открыть бота
                             <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -313,7 +310,7 @@ form.addEventListener('submit', async (e) => {
                                 <line x1="10" y1="14" x2="21" y2="3"/>
                             </svg>
                         </a>
-                    </span>`}
+                    </span>` : ''}
                 `;
             } else {
                 // Fallback на старое поведение, если сообщения нет
