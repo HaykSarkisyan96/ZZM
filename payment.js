@@ -224,7 +224,51 @@ async function checkSubscriptionSynchronous(username) {
                 console.log('Все значения объекта:', Object.entries(data));
             }
             
-            // Проверяем формат ответа API (приоритет: has_subscription из API)
+            // СНАЧАЛА проверяем тестовый период (приоритет перед подпиской)
+            let hasTrial = false;
+            let trialExpiresAt = null;
+            
+            if (typeof data === 'object' && data !== null) {
+                // ПРИОРИТЕТ 1: Проверяем в объекте subscription (основной способ)
+                if (data.subscription && typeof data.subscription === 'object') {
+                    if (data.subscription.is_trial === true || data.subscription.is_trial === 1) {
+                        hasTrial = true;
+                        trialExpiresAt = data.subscription.trial_ends_at || data.subscription.trial_expiration_date || data.subscription.trial_expires || data.subscription.trial_end_date;
+                    }
+                }
+                // ПРИОРИТЕТ 2: Проверяем на верхнем уровне (для обратной совместимости)
+                if (!hasTrial && (data.has_trial === true || data.trial_active === true || data.is_trial === true || data.is_trial === 1)) {
+                    hasTrial = true;
+                    trialExpiresAt = data.trial_expires_at || data.trial_expiration_date || data.trial_expires || data.trial_end_date;
+                } 
+                // ПРИОРИТЕТ 3: Проверяем в объекте trial
+                if (!hasTrial && data.trial && typeof data.trial === 'object') {
+                    if (data.trial.active === true || data.trial.status === 'active' || data.trial.status === 'ACTIVE') {
+                        hasTrial = true;
+                        trialExpiresAt = data.trial.expires_at || data.trial.expiration_date || data.trial.expires || data.trial.end_date;
+                    }
+                }
+            }
+            
+            console.log('Результат проверки тестового периода:', hasTrial ? 'АКТИВЕН' : 'НЕ АКТИВЕН');
+            if (hasTrial && data.subscription) {
+                console.log('Данные тестового периода:', {
+                    is_trial: data.subscription.is_trial,
+                    trial_ends_at: data.subscription.trial_ends_at
+                });
+            }
+            
+            // Если есть тестовый период, возвращаем информацию о нем (ПЕРЕД проверкой подписки)
+            if (hasTrial) {
+                console.log('Тестовый период активен, дата окончания:', trialExpiresAt);
+                return {
+                    hasSubscription: false,
+                    hasTrial: true,
+                    trialExpiresAt: trialExpiresAt
+                };
+            }
+            
+            // ТЕПЕРЬ проверяем подписку (только если тестового периода нет)
             let subscriptionExists = false;
             let subscriptionReason = '';
             
@@ -235,11 +279,13 @@ async function checkSubscriptionSynchronous(username) {
                     subscriptionExists = true;
                     subscriptionReason = 'has_subscription === true (API)';
                 }
-                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом
+                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом (НО НЕ тестовый период)
                 else if (data.subscription && typeof data.subscription === 'object') {
-                    if (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE') {
+                    // Проверяем, что это НЕ тестовый период
+                    const isTrial = data.subscription.is_trial === true || data.subscription.is_trial === 1;
+                    if (!isTrial && (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE')) {
                         subscriptionExists = true;
-                        subscriptionReason = 'subscription.status === active';
+                        subscriptionReason = 'subscription.status === active (не тестовый период)';
                     }
                 }
                 // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
@@ -273,50 +319,7 @@ async function checkSubscriptionSynchronous(username) {
                 subscriptionReason = 'непустой массив';
             }
             
-            // Проверяем тестовый период (приоритет перед подпиской)
-            let hasTrial = false;
-            let trialExpiresAt = null;
-            
-            if (typeof data === 'object' && data !== null) {
-                // ПРИОРИТЕТ 1: Проверяем в объекте subscription (основной способ)
-                if (data.subscription && typeof data.subscription === 'object') {
-                    if (data.subscription.is_trial === true || data.subscription.is_trial === 1) {
-                        hasTrial = true;
-                        trialExpiresAt = data.subscription.trial_ends_at || data.subscription.trial_expiration_date || data.subscription.trial_expires || data.subscription.trial_end_date;
-                    }
-                }
-                // ПРИОРИТЕТ 2: Проверяем на верхнем уровне (для обратной совместимости)
-                else if (data.has_trial === true || data.trial_active === true || data.is_trial === true || data.is_trial === 1) {
-                    hasTrial = true;
-                    trialExpiresAt = data.trial_expires_at || data.trial_expiration_date || data.trial_expires || data.trial_end_date;
-                } 
-                // ПРИОРИТЕТ 3: Проверяем в объекте trial
-                else if (data.trial && typeof data.trial === 'object') {
-                    if (data.trial.active === true || data.trial.status === 'active' || data.trial.status === 'ACTIVE') {
-                        hasTrial = true;
-                        trialExpiresAt = data.trial.expires_at || data.trial.expiration_date || data.trial.expires || data.trial.end_date;
-                    }
-                }
-            }
-            
             console.log('Результат синхронной проверки подписки:', subscriptionExists ? 'НАЙДЕНА' : 'НЕ НАЙДЕНА', subscriptionReason ? `(${subscriptionReason})` : '');
-            console.log('Результат проверки тестового периода:', hasTrial ? 'АКТИВЕН' : 'НЕ АКТИВЕН');
-            if (hasTrial && data.subscription) {
-                console.log('Данные тестового периода:', {
-                    is_trial: data.subscription.is_trial,
-                    trial_ends_at: data.subscription.trial_ends_at
-                });
-            }
-            
-            // Если есть тестовый период, возвращаем информацию о нем
-            if (hasTrial) {
-                console.log('Тестовый период активен, дата окончания:', trialExpiresAt);
-                return {
-                    hasSubscription: false,
-                    hasTrial: true,
-                    trialExpiresAt: trialExpiresAt
-                };
-            }
             
             if (subscriptionExists) {
                 // Извлекаем информацию о тарифе и дате истечения (приоритет: из объекта subscription)
@@ -401,44 +404,7 @@ async function checkSubscription(username) {
             console.log('Тип данных:', typeof data);
             console.log('Ключи объекта:', Object.keys(data || {}));
             
-            // Проверяем формат ответа API (приоритет: has_subscription из API)
-            let subscriptionExists = false;
-            
-            // Если это объект (стандартный формат ответа API)
-            if (typeof data === 'object' && data !== null) {
-                // ПРИОРИТЕТ 1: Прямое поле has_subscription из API (самый надежный способ)
-                if (data.has_subscription === true) {
-                    subscriptionExists = true;
-                }
-                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом
-                else if (data.subscription && typeof data.subscription === 'object') {
-                    if (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE') {
-                        subscriptionExists = true;
-                    }
-                }
-                // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
-                else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
-                    subscriptionExists = true;
-                }
-                // ПРИОРИТЕТ 4: Проверяем другие возможные поля
-                else if (data.subscription_exists === true || 
-                         data.is_active === true || 
-                         data.active === true ||
-                         data.status === 'active' ||
-                         data.status === 'ACTIVE') {
-                    subscriptionExists = true;
-                }
-            }
-            // Если это просто boolean или строка
-            else if (data === true || data === 'true' || data === 1 || data === '1') {
-                subscriptionExists = true;
-            }
-            // Если это массив - проверяем, не пустой ли он
-            else if (Array.isArray(data) && data.length > 0) {
-                subscriptionExists = true;
-            }
-            
-            // Проверяем тестовый период (приоритет перед подпиской)
+            // СНАЧАЛА проверяем тестовый период (приоритет перед подпиской)
             let hasTrial = false;
             let trialExpiresAt = null;
             
@@ -451,12 +417,12 @@ async function checkSubscription(username) {
                     }
                 }
                 // ПРИОРИТЕТ 2: Проверяем на верхнем уровне (для обратной совместимости)
-                else if (data.has_trial === true || data.trial_active === true || data.is_trial === true || data.is_trial === 1) {
+                if (!hasTrial && (data.has_trial === true || data.trial_active === true || data.is_trial === true || data.is_trial === 1)) {
                     hasTrial = true;
                     trialExpiresAt = data.trial_expires_at || data.trial_expiration_date || data.trial_expires || data.trial_end_date;
                 } 
                 // ПРИОРИТЕТ 3: Проверяем в объекте trial
-                else if (data.trial && typeof data.trial === 'object') {
+                if (!hasTrial && data.trial && typeof data.trial === 'object') {
                     if (data.trial.active === true || data.trial.status === 'active' || data.trial.status === 'ACTIVE') {
                         hasTrial = true;
                         trialExpiresAt = data.trial.expires_at || data.trial.expiration_date || data.trial.expires || data.trial.end_date;
@@ -464,7 +430,6 @@ async function checkSubscription(username) {
                 }
             }
             
-            console.log('Подписка найдена при вводе:', subscriptionExists);
             console.log('Тестовый период найден при вводе:', hasTrial);
             if (hasTrial && data.subscription) {
                 console.log('Данные тестового периода:', {
@@ -497,7 +462,49 @@ async function checkSubscription(username) {
                 
                 // НЕ блокируем кнопку оплаты - разрешаем оплату
                 updatePaymentButton();
-            } else if (subscriptionExists) {
+            } else {
+                // ТЕПЕРЬ проверяем подписку (только если тестового периода нет)
+                let subscriptionExists = false;
+                
+                // Если это объект (стандартный формат ответа API)
+                if (typeof data === 'object' && data !== null) {
+                    // ПРИОРИТЕТ 1: Прямое поле has_subscription из API (самый надежный способ)
+                    if (data.has_subscription === true) {
+                        subscriptionExists = true;
+                    }
+                    // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом (НО НЕ тестовый период)
+                    else if (data.subscription && typeof data.subscription === 'object') {
+                        // Проверяем, что это НЕ тестовый период
+                        const isTrial = data.subscription.is_trial === true || data.subscription.is_trial === 1;
+                        if (!isTrial && (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE')) {
+                            subscriptionExists = true;
+                        }
+                    }
+                    // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
+                    else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
+                        subscriptionExists = true;
+                    }
+                    // ПРИОРИТЕТ 4: Проверяем другие возможные поля
+                    else if (data.subscription_exists === true || 
+                             data.is_active === true || 
+                             data.active === true ||
+                             data.status === 'active' ||
+                             data.status === 'ACTIVE') {
+                        subscriptionExists = true;
+                    }
+                }
+                // Если это просто boolean или строка
+                else if (data === true || data === 'true' || data === 1 || data === '1') {
+                    subscriptionExists = true;
+                }
+                // Если это массив - проверяем, не пустой ли он
+                else if (Array.isArray(data) && data.length > 0) {
+                    subscriptionExists = true;
+                }
+                
+                console.log('Подписка найдена при вводе:', subscriptionExists);
+                
+                if (subscriptionExists) {
                 // Подписка существует - показываем информацию, но НЕ блокируем оплату
                 hasActiveSubscription = false; // НЕ блокируем, разрешаем смену тарифа
                 // Извлекаем информацию о тарифе и дате (приоритет: из объекта subscription)
