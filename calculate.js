@@ -7,24 +7,55 @@ const API_URL = 'https://new-landing-production.up.railway.app/api/process';
 const STORAGE_USERNAME_KEY = 'telegram_username';
 const STORAGE_STORE_NAME_KEY = 'store_name';
 
-// DOM элементы
-const form = document.getElementById('calculateForm');
-const fileInput = document.getElementById('file-upload');
-const fileDropzone = document.getElementById('fileDropzone');
-const fileDropzoneContent = document.getElementById('fileDropzoneContent');
-const filePreview = document.getElementById('filePreview');
-const fileName = document.getElementById('fileName');
-const fileRemove = document.getElementById('fileRemove');
-const usernameInput = document.getElementById('username');
-const storeNameInput = document.getElementById('storeName');
-const phoneInput = document.getElementById('phone');
-const submitButton = document.getElementById('submitButton');
-const submitLoader = document.getElementById('submitLoader');
-const submitButtonText = document.getElementById('submitButtonText');
-const errorAlert = document.getElementById('errorAlert');
-const errorMessage = document.getElementById('errorMessage');
-const successAlert = document.getElementById('successAlert');
-const successMessage = document.getElementById('successMessage');
+// DOM элементы (будут инициализированы после загрузки DOM)
+let form;
+let fileInput;
+let fileDropzone;
+let fileDropzoneContent;
+let filePreview;
+let fileName;
+let fileRemove;
+let usernameInput;
+let storeNameInput;
+let phoneInput;
+let submitButton;
+let submitLoader;
+let submitButtonText;
+let errorAlert;
+let errorMessage;
+let successAlert;
+let successMessage;
+
+// Инициализация DOM элементов
+function initDOMElements() {
+    form = document.getElementById('calculateForm');
+    fileInput = document.getElementById('file-upload');
+    fileDropzone = document.getElementById('fileDropzone');
+    fileDropzoneContent = document.getElementById('fileDropzoneContent');
+    filePreview = document.getElementById('filePreview');
+    fileName = document.getElementById('fileName');
+    fileRemove = document.getElementById('fileRemove');
+    usernameInput = document.getElementById('username');
+    storeNameInput = document.getElementById('storeName');
+    phoneInput = document.getElementById('phone');
+    submitButton = document.getElementById('submitButton');
+    submitLoader = document.getElementById('submitLoader');
+    submitButtonText = document.getElementById('submitButtonText');
+    errorAlert = document.getElementById('errorAlert');
+    errorMessage = document.getElementById('errorMessage');
+    successAlert = document.getElementById('successAlert');
+    successMessage = document.getElementById('successMessage');
+    
+    // Проверяем, что все элементы найдены
+    if (!form || !fileInput || !fileDropzone || !fileDropzoneContent || !filePreview || 
+        !fileName || !fileRemove || !usernameInput || !storeNameInput || !phoneInput || 
+        !submitButton || !submitLoader || !submitButtonText || !errorAlert || 
+        !errorMessage || !successAlert || !successMessage) {
+        console.error('Не все DOM элементы найдены!');
+        return false;
+    }
+    return true;
+}
 
 // Загружаем сохраненные данные из localStorage
 function loadSavedData() {
@@ -133,8 +164,15 @@ function hideAlerts() {
     successAlert.style.display = 'none';
 }
 
-// Обработка изменения файла
-fileInput.addEventListener('change', (e) => {
+// Инициализация обработчиков событий
+function initEventListeners() {
+    if (!fileInput || !fileDropzone || !fileRemove || !usernameInput || !storeNameInput || !form) {
+        console.error('Не все элементы для обработчиков событий найдены!');
+        return;
+    }
+    
+    // Обработка изменения файла
+    fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
         const fileExtension = file.name.split('.').pop()?.toLowerCase();
@@ -146,75 +184,74 @@ fileInput.addEventListener('change', (e) => {
             showError('Пожалуйста, загрузите файл формата .xlsx или .xls');
             hideFilePreview();
         }
-    }
-});
+    });
 
-// Обработка удаления файла
-fileRemove.addEventListener('click', (e) => {
+    // Обработка удаления файла
+    fileRemove.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        hideFilePreview();
+        hideAlerts();
+    });
+
+    // Drag and Drop для файла
+    fileDropzone.addEventListener('dragover', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    hideFilePreview();
-    hideAlerts();
-});
+        fileDropzone.style.borderColor = 'var(--accent-blue)';
+        fileDropzone.style.background = 'rgba(0, 0, 0, 0.05)';
+    });
 
-// Drag and Drop для файла
-fileDropzone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    fileDropzone.style.borderColor = 'var(--accent-blue)';
-    fileDropzone.style.background = 'rgba(0, 0, 0, 0.05)';
-});
+    fileDropzone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileDropzone.style.borderColor = 'var(--border-color)';
+        fileDropzone.style.background = 'var(--muted-bg)';
+    });
 
-fileDropzone.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    fileDropzone.style.borderColor = 'var(--border-color)';
-    fileDropzone.style.background = 'var(--muted-bg)';
-});
-
-fileDropzone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    fileDropzone.style.borderColor = 'var(--border-color)';
-    fileDropzone.style.background = 'var(--muted-bg)';
-    
-    const file = e.dataTransfer.files[0];
-    if (file) {
-        const fileExtension = file.name.split('.').pop()?.toLowerCase();
-        if (fileExtension === 'xlsx' || fileExtension === 'xls') {
-            // Создаем новый FileList для input
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-            showFilePreview(file);
-            hideAlerts();
-            updateSubmitButton();
-        } else {
-            showError('Пожалуйста, загрузите файл формата .xlsx или .xls');
+    fileDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileDropzone.style.borderColor = 'var(--border-color)';
+        fileDropzone.style.background = 'var(--muted-bg)';
+        
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            const fileExtension = file.name.split('.').pop()?.toLowerCase();
+            if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+                // Создаем новый FileList для input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                showFilePreview(file);
+                hideAlerts();
+                updateSubmitButton();
+            } else {
+                showError('Пожалуйста, загрузите файл формата .xlsx или .xls');
+            }
         }
-    }
-});
+    });
 
-// Обработка изменения username
-usernameInput.addEventListener('input', (e) => {
-    let value = e.target.value.trim();
-    // Убираем @ если пользователь его указал
-    if (value.startsWith('@')) {
-        value = value.substring(1);
-        e.target.value = value;
-    }
-    hideAlerts();
-    updateSubmitButton();
-    saveToLocalStorage();
-});
+    // Обработка изменения username
+    usernameInput.addEventListener('input', (e) => {
+        let value = e.target.value.trim();
+        // Убираем @ если пользователь его указал
+        if (value.startsWith('@')) {
+            value = value.substring(1);
+            e.target.value = value;
+        }
+        hideAlerts();
+        updateSubmitButton();
+        saveToLocalStorage();
+    });
 
-// Обработка изменения store name
-storeNameInput.addEventListener('input', () => {
-    saveToLocalStorage();
-});
+    // Обработка изменения store name
+    storeNameInput.addEventListener('input', () => {
+        saveToLocalStorage();
+    });
 
-// Обработка отправки формы
-form.addEventListener('submit', async (e) => {
+    // Обработка отправки формы
+    form.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideAlerts();
     
@@ -402,20 +439,31 @@ form.addEventListener('submit', async (e) => {
         submitButtonText.textContent = 'Получить заявку в Telegram';
         updateSubmitButton();
     }
-});
-
-// Обработка клика на dropzone (для надежности)
-fileDropzone.addEventListener('click', (e) => {
-    // Если клик был на кнопке удаления файла, не открываем диалог
-    if (e.target.closest('#fileRemove')) {
-        return;
-    }
-    // Программно вызываем клик на input
-    fileInput.click();
-});
+    });
+}
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
+    // Инициализируем DOM элементы
+    if (!initDOMElements()) {
+        console.error('Ошибка инициализации DOM элементов');
+        return;
+    }
+    
+    // Инициализируем обработчики событий
+    initEventListeners();
+    
+    // Обработка клика на dropzone (для надежности)
+    fileDropzone.addEventListener('click', (e) => {
+        // Если клик был на кнопке удаления файла, не открываем диалог
+        if (e.target.closest('#fileRemove')) {
+            return;
+        }
+        // Программно вызываем клик на input
+        fileInput.click();
+    });
+    
+    // Загружаем сохраненные данные и обновляем кнопку
     loadSavedData();
     updateSubmitButton();
 });
