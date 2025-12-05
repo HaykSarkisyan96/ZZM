@@ -2367,6 +2367,8 @@ body {
     height: 1px;
     opacity: 0;
     overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .file-dropzone {
@@ -2382,6 +2384,9 @@ body {
     transition: all 0.3s ease;
     background: var(--muted-bg);
     min-height: 80px;
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
 }
 
 .file-dropzone:hover {
