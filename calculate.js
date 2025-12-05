@@ -453,36 +453,48 @@ function initEventListeners() {
 }
 
 // Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    // DOM уже загружен
+    init();
+}
+
+function init() {
     console.log('DOM загружен, начинаем инициализацию...');
     
-    // Инициализируем DOM элементы
-    if (!initDOMElements()) {
-        console.error('Ошибка инициализации DOM элементов');
-        alert('Ошибка загрузки страницы. Пожалуйста, обновите страницу.');
-        return;
-    }
-    
-    console.log('DOM элементы инициализированы');
-    
-    // Инициализируем обработчики событий
-    initEventListeners();
-    console.log('Обработчики событий инициализированы');
-    
-    // Обработка клика на dropzone (для надежности)
-    fileDropzone.addEventListener('click', (e) => {
-        // Если клик был на кнопке удаления файла, не открываем диалог
-        if (e.target.closest('#fileRemove')) {
+    try {
+        // Инициализируем DOM элементы
+        if (!initDOMElements()) {
+            console.error('Ошибка инициализации DOM элементов');
+            alert('Ошибка загрузки страницы. Пожалуйста, обновите страницу (Cmd+Shift+R на Mac).');
             return;
         }
-        // Программно вызываем клик на input
-        console.log('Клик на dropzone, открываем диалог выбора файла');
-        fileInput.click();
-    });
-    
-    // Загружаем сохраненные данные и обновляем кнопку
-    loadSavedData();
-    updateSubmitButton();
-    console.log('Инициализация завершена');
-});
+        
+        console.log('DOM элементы инициализированы');
+        
+        // Инициализируем обработчики событий
+        initEventListeners();
+        console.log('Обработчики событий инициализированы');
+        
+        // Обработка клика на dropzone (для надежности)
+        fileDropzone.addEventListener('click', (e) => {
+            // Если клик был на кнопке удаления файла, не открываем диалог
+            if (e.target.closest('#fileRemove')) {
+                return;
+            }
+            // Программно вызываем клик на input
+            console.log('Клик на dropzone, открываем диалог выбора файла');
+            fileInput.click();
+        });
+        
+        // Загружаем сохраненные данные и обновляем кнопку
+        loadSavedData();
+        updateSubmitButton();
+        console.log('Инициализация завершена');
+    } catch (error) {
+        console.error('Критическая ошибка при инициализации:', error);
+        alert('Критическая ошибка при загрузке страницы. Пожалуйста, обновите страницу (Cmd+Shift+R на Mac).\n\nОшибка: ' + error.message);
+    }
+}
 

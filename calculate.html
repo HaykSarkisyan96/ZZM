@@ -230,6 +230,15 @@
         </div>
     </div>
 
+    <script>
+        // Проверяем, что скрипт загрузился
+        window.addEventListener('error', (e) => {
+            console.error('Ошибка загрузки ресурса:', e.filename, e.message);
+            if (e.filename && e.filename.includes('calculate.js')) {
+                alert('Ошибка загрузки calculate.js. Пожалуйста, обновите страницу (Cmd+Shift+R).');
+            }
+        }, true);
+    </script>
     <script src="calculate.js" defer></script>
 </body>
 </html>
