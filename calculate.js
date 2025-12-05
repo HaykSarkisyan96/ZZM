@@ -289,13 +289,22 @@ form.addEventListener('submit', async (e) => {
             const botUsername = data.bot_username || 'MoreVkusovBot';
             const botLink = data.bot_link || `https://t.me/${botUsername}`;
             
+            // Используем сообщение из API, если оно есть, иначе формируем свое
             let messageHTML;
-            if (autoSent) {
-                // Заявка отправлена автоматически (платная подписка)
+            if (data.message) {
+                // Используем сообщение из API (там уже правильный текст)
                 messageHTML = `
-                    <span style="font-weight: 600;">✅ Заявка успешно отправлена в Telegram!</span><br>
-                    <span>
-                        Проверьте свой Telegram — заявка уже пришла. 
+                    <span style="font-weight: 600;">${data.message}</span>
+                    ${!autoSent ? `<br><span>
+                        <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
+                            Открыть бота @${botUsername}
+                            <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                <polyline points="15 3 21 3 21 9"/>
+                                <line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                        </a>
+                    </span>` : `<br><span>
                         <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
                             Открыть бота
                             <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -304,25 +313,42 @@ form.addEventListener('submit', async (e) => {
                                 <line x1="10" y1="14" x2="21" y2="3"/>
                             </svg>
                         </a>
-                    </span>
+                    </span>`}
                 `;
             } else {
-                // Заявка не отправлена автоматически (тестовый период или нет chat_id) - нужно нажать /start
-                messageHTML = `
-                    <span style="font-weight: 600;">✅ Заявка готова!</span><br>
-                    <span>
-                        Перейдите в Telegram бота 
-                        <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
-                            @${botUsername}
-                            <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                        и нажмите команду <strong>/start</strong>, чтобы получить заявку.
-                    </span>
-                `;
+                // Fallback на старое поведение, если сообщения нет
+                if (autoSent) {
+                    messageHTML = `
+                        <span style="font-weight: 600;">✅ Заявка успешно отправлена в Telegram!</span><br>
+                        <span>
+                            Проверьте свой Telegram — заявка уже пришла. 
+                            <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
+                                Открыть бота
+                                <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                    <polyline points="15 3 21 3 21 9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                            </a>
+                        </span>
+                    `;
+                } else {
+                    messageHTML = `
+                        <span style="font-weight: 600;">✅ Заявка готова!</span><br>
+                        <span>
+                            Перейдите в Telegram бота 
+                            <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
+                                @${botUsername}
+                                <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                    <polyline points="15 3 21 3 21 9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                            </a>
+                            и нажмите команду <strong>/start</strong>, чтобы получить заявку.
+                        </span>
+                    `;
+                }
             }
             
             successMessage.innerHTML = messageHTML;
