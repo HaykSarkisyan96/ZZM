@@ -224,7 +224,96 @@ async function checkSubscriptionSynchronous(username) {
                 console.log('Все значения объекта:', Object.entries(data));
             }
             
-            // СНАЧАЛА проверяем тестовый период (приоритет перед подпиской)
+            // СНАЧАЛА проверяем платную подписку (приоритет перед тестовым периодом)
+            // Если у пользователя есть активная платная подписка, тестовый период игнорируется
+            let subscriptionExists = false;
+            let subscriptionReason = '';
+            let isPaidSubscription = false;
+            
+            // Если это объект (стандартный формат ответа API)
+            if (typeof data === 'object' && data !== null) {
+                // ПРИОРИТЕТ 1: Прямое поле has_subscription из API (самый надежный способ)
+                if (data.has_subscription === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'has_subscription === true (API)';
+                }
+                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом
+                else if (data.subscription && typeof data.subscription === 'object') {
+                    // Проверяем, что это НЕ тестовый период (is_trial === false или отсутствует)
+                    const isTrial = data.subscription.is_trial === true || data.subscription.is_trial === 1;
+                    const isActive = data.subscription.status === 'active' || data.subscription.status === 'ACTIVE';
+                    
+                    // Если статус активен И это НЕ тестовый период - это платная подписка
+                    if (isActive && !isTrial) {
+                        subscriptionExists = true;
+                        isPaidSubscription = true;
+                        subscriptionReason = 'subscription.status === active (платная подписка, не тестовый период)';
+                    }
+                    // Если статус активен, но это тестовый период - это тестовый период
+                    else if (isActive && isTrial) {
+                        // Это тестовый период, не платная подписка
+                        subscriptionExists = false;
+                    }
+                }
+                // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
+                else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
+                    // Проверяем, не тестовый ли это период
+                    const isTrial = data.subscription?.is_trial === true || data.subscription?.is_trial === 1 || 
+                                   data.is_trial === true || data.has_trial === true;
+                    if (!isTrial) {
+                        subscriptionExists = true;
+                        isPaidSubscription = true;
+                        subscriptionReason = 'success === true и есть данные о подписке (не тестовый период)';
+                    }
+                }
+                // ПРИОРИТЕТ 4: Проверяем другие возможные поля
+                else if (data.subscription_exists === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'subscription_exists === true';
+                } else if (data.is_active === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'is_active === true';
+                } else if (data.active === true) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'active === true';
+                } else if (data.status && (data.status === 'active' || data.status === 'ACTIVE')) {
+                    subscriptionExists = true;
+                    subscriptionReason = 'status === active';
+                }
+            }
+            
+            // Если есть платная подписка, возвращаем информацию о ней (игнорируя тестовый период)
+            if (subscriptionExists && isPaidSubscription) {
+                const subscription = data.subscription || data;
+                const tariffName = 
+                    subscription.tariff_name || 
+                    subscription.tariff || 
+                    subscription.tariff_id ||
+                    data.tariff_name || 
+                    data.tariff || 
+                    data.tariff_id ||
+                    'активна';
+                
+                const expiresAt = 
+                    subscription.expires_at || 
+                    subscription.expiration_date || 
+                    subscription.expires || 
+                    subscription.end_date ||
+                    data.expires_at || 
+                    data.expiration_date || 
+                    data.expires || 
+                    data.end_date;
+                
+                console.log('Платная подписка найдена:', { tariffName, expiresAt });
+                
+                return {
+                    hasSubscription: true,
+                    tariffName: tariffName,
+                    expiresAt: expiresAt
+                };
+            }
+            
+            // ТЕПЕРЬ проверяем тестовый период (только если платной подписки нет)
             let hasTrial = false;
             let trialExpiresAt = null;
             
@@ -258,7 +347,7 @@ async function checkSubscriptionSynchronous(username) {
                 });
             }
             
-            // Если есть тестовый период, возвращаем информацию о нем (ПЕРЕД проверкой подписки)
+            // Если есть тестовый период (и нет платной подписки), возвращаем информацию о нем
             if (hasTrial) {
                 console.log('Тестовый период активен, дата окончания:', trialExpiresAt);
                 return {
@@ -268,89 +357,8 @@ async function checkSubscriptionSynchronous(username) {
                 };
             }
             
-            // ТЕПЕРЬ проверяем подписку (только если тестового периода нет)
-            let subscriptionExists = false;
-            let subscriptionReason = '';
-            
-            // Если это объект (стандартный формат ответа API)
-            if (typeof data === 'object' && data !== null) {
-                // ПРИОРИТЕТ 1: Прямое поле has_subscription из API (самый надежный способ)
-                if (data.has_subscription === true) {
-                    subscriptionExists = true;
-                    subscriptionReason = 'has_subscription === true (API)';
-                }
-                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом (НО НЕ тестовый период)
-                else if (data.subscription && typeof data.subscription === 'object') {
-                    // Проверяем, что это НЕ тестовый период
-                    const isTrial = data.subscription.is_trial === true || data.subscription.is_trial === 1;
-                    if (!isTrial && (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE')) {
-                        subscriptionExists = true;
-                        subscriptionReason = 'subscription.status === active (не тестовый период)';
-                    }
-                }
-                // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
-                else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
-                    subscriptionExists = true;
-                    subscriptionReason = 'success === true и есть данные о подписке';
-                }
-                // ПРИОРИТЕТ 4: Проверяем другие возможные поля
-                else if (data.subscription_exists === true) {
-                    subscriptionExists = true;
-                    subscriptionReason = 'subscription_exists === true';
-                } else if (data.is_active === true) {
-                    subscriptionExists = true;
-                    subscriptionReason = 'is_active === true';
-                } else if (data.active === true) {
-                    subscriptionExists = true;
-                    subscriptionReason = 'active === true';
-                } else if (data.status && (data.status === 'active' || data.status === 'ACTIVE')) {
-                    subscriptionExists = true;
-                    subscriptionReason = 'status === active';
-                }
-            }
-            // Если это просто boolean или строка
-            else if (data === true || data === 'true' || data === 1 || data === '1') {
-                subscriptionExists = true;
-                subscriptionReason = 'boolean/string true';
-            }
-            // Если это массив - проверяем, не пустой ли он
-            else if (Array.isArray(data) && data.length > 0) {
-                subscriptionExists = true;
-                subscriptionReason = 'непустой массив';
-            }
-            
-            console.log('Результат синхронной проверки подписки:', subscriptionExists ? 'НАЙДЕНА' : 'НЕ НАЙДЕНА', subscriptionReason ? `(${subscriptionReason})` : '');
-            
-            if (subscriptionExists) {
-                // Извлекаем информацию о тарифе и дате истечения (приоритет: из объекта subscription)
-                const subscription = data.subscription || data;
-                const tariffName = 
-                    subscription.tariff_name || 
-                    subscription.tariff || 
-                    subscription.tariff_id ||
-                    data.tariff_name || 
-                    data.tariff || 
-                    data.tariff_id ||
-                    'активна';
-                
-                const expiresAt = 
-                    subscription.expires_at || 
-                    subscription.expiration_date || 
-                    subscription.expires || 
-                    subscription.end_date ||
-                    data.expires_at || 
-                    data.expiration_date || 
-                    data.expires || 
-                    data.end_date;
-                
-                console.log('Информация о подписке:', { tariffName, expiresAt });
-                
-                return {
-                    hasSubscription: true,
-                    tariffName: tariffName,
-                    expiresAt: expiresAt
-                };
-            }
+            // Если нет ни платной подписки, ни тестового периода, возвращаем отсутствие подписки
+            console.log('Подписка не найдена');
         } else {
             console.log('Ошибка ответа при проверке подписки:', response.status, response.statusText);
             let errorText = '';
@@ -404,7 +412,69 @@ async function checkSubscription(username) {
             console.log('Тип данных:', typeof data);
             console.log('Ключи объекта:', Object.keys(data || {}));
             
-            // СНАЧАЛА проверяем тестовый период (приоритет перед подпиской)
+            // СНАЧАЛА проверяем платную подписку (приоритет перед тестовым периодом)
+            let subscriptionExists = false;
+            let isPaidSubscription = false;
+            
+            if (typeof data === 'object' && data !== null) {
+                // ПРИОРИТЕТ 1: Прямое поле has_subscription из API
+                if (data.has_subscription === true) {
+                    subscriptionExists = true;
+                    isPaidSubscription = true;
+                }
+                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом
+                else if (data.subscription && typeof data.subscription === 'object') {
+                    // Проверяем, что это НЕ тестовый период (is_trial === false или отсутствует)
+                    const isTrial = data.subscription.is_trial === true || data.subscription.is_trial === 1;
+                    const isActive = data.subscription.status === 'active' || data.subscription.status === 'ACTIVE';
+                    
+                    // Если статус активен И это НЕ тестовый период - это платная подписка
+                    if (isActive && !isTrial) {
+                        subscriptionExists = true;
+                        isPaidSubscription = true;
+                    }
+                }
+                // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
+                else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
+                    // Проверяем, не тестовый ли это период
+                    const isTrial = data.subscription?.is_trial === true || data.subscription?.is_trial === 1 || 
+                                   data.is_trial === true || data.has_trial === true;
+                    if (!isTrial) {
+                        subscriptionExists = true;
+                        isPaidSubscription = true;
+                    }
+                }
+            }
+            
+            // Если есть платная подписка, показываем информацию о ней (игнорируя тестовый период)
+            if (subscriptionExists && isPaidSubscription) {
+                hasActiveSubscription = false; // НЕ блокируем, но показываем информацию
+                const subscription = data.subscription || data;
+                const tariffName = subscription.tariff_name || subscription.tariff || data.tariff_name || data.tariff || 'активна';
+                const expiresAt = subscription.expires_at || subscription.expiration_date || data.expires_at || data.expiration_date;
+                
+                const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }) : null;
+                
+                let message = `<strong>✅ У вас активна подписка</strong><br>`;
+                message += `Тариф: <strong>${tariffName}</strong><br>`;
+                if (formattedDate) {
+                    message += `Действует до: <strong>${formattedDate}</strong><br>`;
+                }
+                message += `<br>Вы можете сменить тариф, оплатив новый.`;
+                
+                subscriptionExistsMessage.innerHTML = message;
+                subscriptionExistsAlert.style.display = 'flex';
+                errorAlert.style.display = 'none';
+                successAlert.style.display = 'none';
+                updatePaymentButton();
+                return;
+            }
+            
+            // ТЕПЕРЬ проверяем тестовый период (только если платной подписки нет)
             let hasTrial = false;
             let trialExpiresAt = null;
             
@@ -430,21 +500,7 @@ async function checkSubscription(username) {
                 }
             }
             
-            console.log('=== ОТЛАДКА ПРОВЕРКИ ТЕСТОВОГО ПЕРИОДА ===');
-            console.log('Тестовый период найден при вводе:', hasTrial);
-            console.log('Полный ответ API:', JSON.stringify(data, null, 2));
-            console.log('data.subscription:', data.subscription);
-            if (data.subscription) {
-                console.log('data.subscription.is_trial:', data.subscription.is_trial, 'тип:', typeof data.subscription.is_trial);
-                console.log('data.subscription.trial_ends_at:', data.subscription.trial_ends_at);
-                console.log('data.subscription.status:', data.subscription.status);
-            }
-            console.log('Проверка условий:');
-            console.log('  data.subscription?.is_trial === true:', data.subscription?.is_trial === true);
-            console.log('  data.subscription?.is_trial === 1:', data.subscription?.is_trial === 1);
-            console.log('=== КОНЕЦ ОТЛАДКИ ===');
-            
-            // Если есть тестовый период, показываем специальное сообщение
+            // Если есть тестовый период (и нет платной подписки), показываем специальное сообщение
             if (hasTrial) {
                 hasActiveSubscription = false; // НЕ блокируем, но предупреждаем
                 const formattedDate = trialExpiresAt ? new Date(trialExpiresAt).toLocaleDateString('ru-RU', { 
@@ -465,10 +521,41 @@ async function checkSubscription(username) {
                 subscriptionExistsAlert.style.display = 'flex';
                 errorAlert.style.display = 'none';
                 successAlert.style.display = 'none';
-                
-                // НЕ блокируем кнопку оплаты - разрешаем оплату
                 updatePaymentButton();
-            } else {
+                return;
+            }
+            
+            // Если нет ни платной подписки, ни тестового периода, проверяем подписку еще раз (для обратной совместимости)
+            subscriptionExists = false;
+            
+            if (typeof data === 'object' && data !== null) {
+                // ПРИОРИТЕТ 1: Прямое поле has_subscription из API (самый надежный способ)
+                if (data.has_subscription === true) {
+                    subscriptionExists = true;
+                }
+                // ПРИОРИТЕТ 2: Проверяем наличие объекта subscription с активным статусом (НО НЕ тестовый период)
+                else if (data.subscription && typeof data.subscription === 'object') {
+                    // Проверяем, что это НЕ тестовый период
+                    const isTrial = data.subscription.is_trial === true || data.subscription.is_trial === 1;
+                    if (!isTrial && (data.subscription.status === 'active' || data.subscription.status === 'ACTIVE')) {
+                        subscriptionExists = true;
+                    }
+                }
+                // ПРИОРИТЕТ 3: Проверяем success и наличие данных о подписке
+                else if (data.success === true && (data.subscription || data.tariff_name || data.tariff)) {
+                    subscriptionExists = true;
+                }
+                // ПРИОРИТЕТ 4: Проверяем другие возможные поля
+                else if (data.subscription_exists === true || 
+                         data.is_active === true || 
+                         data.active === true ||
+                         data.status === 'active' ||
+                         data.status === 'ACTIVE') {
+                    subscriptionExists = true;
+                }
+            }
+            
+            if (subscriptionExists) {
                 // ТЕПЕРЬ проверяем подписку (только если тестового периода нет)
                 let subscriptionExists = false;
                 
