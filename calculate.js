@@ -59,19 +59,21 @@ function initDOMElements() {
 
 // Загружаем сохраненные данные из localStorage
 function loadSavedData() {
+    if (!usernameInput || !storeNameInput) return;
     const savedUsername = localStorage.getItem(STORAGE_USERNAME_KEY);
     const savedStoreName = localStorage.getItem(STORAGE_STORE_NAME_KEY);
     
-    if (savedUsername) {
+    if (savedUsername && usernameInput) {
         usernameInput.value = savedUsername;
     }
-    if (savedStoreName) {
+    if (savedStoreName && storeNameInput) {
         storeNameInput.value = savedStoreName;
     }
 }
 
 // Сохраняем данные в localStorage
 function saveToLocalStorage() {
+    if (!usernameInput || !storeNameInput) return;
     if (usernameInput.value.trim()) {
         localStorage.setItem(STORAGE_USERNAME_KEY, usernameInput.value.trim());
     }
@@ -82,6 +84,7 @@ function saveToLocalStorage() {
 
 // Показываем превью файла
 function showFilePreview(file) {
+    if (!fileName || !fileDropzoneContent || !filePreview) return;
     fileName.textContent = file.name;
     fileDropzoneContent.style.display = 'none';
     filePreview.style.display = 'flex';
@@ -89,6 +92,7 @@ function showFilePreview(file) {
 
 // Скрываем превью файла
 function hideFilePreview() {
+    if (!fileDropzoneContent || !filePreview || !fileInput) return;
     fileDropzoneContent.style.display = 'flex';
     filePreview.style.display = 'none';
     fileInput.value = '';
@@ -97,6 +101,7 @@ function hideFilePreview() {
 
 // Обновляем состояние кнопки отправки
 function updateSubmitButton() {
+    if (!fileInput || !usernameInput || !submitButton) return;
     const hasFile = fileInput.files && fileInput.files.length > 0;
     const hasUsername = usernameInput.value.trim().length > 0;
     
@@ -105,6 +110,7 @@ function updateSubmitButton() {
 
 // Показываем ошибку
 function showError(message) {
+    if (!errorMessage || !errorAlert || !successAlert) return;
     errorMessage.innerHTML = message;  // Используем innerHTML для поддержки HTML ссылок
     errorAlert.style.display = 'flex';
     successAlert.style.display = 'none';
@@ -151,15 +157,18 @@ function showSuccess(message, botLink, botUsername, autoSent = false) {
         `;
     }
     
-    successMessage.innerHTML = messageHTML;
-    successAlert.style.display = 'flex';
-    errorAlert.style.display = 'none';
-    // Прокручиваем к успеху
-    successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (successMessage && successAlert && errorAlert) {
+        successMessage.innerHTML = messageHTML;
+        successAlert.style.display = 'flex';
+        errorAlert.style.display = 'none';
+        // Прокручиваем к успеху
+        successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 }
 
 // Скрываем все алерты
 function hideAlerts() {
+    if (!errorAlert || !successAlert) return;
     errorAlert.style.display = 'none';
     successAlert.style.display = 'none';
 }
