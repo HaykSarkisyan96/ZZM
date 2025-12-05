@@ -912,6 +912,7 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 /* Выделенный тариф (Бизнес) */

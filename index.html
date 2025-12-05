@@ -400,7 +400,7 @@
             <h2 class="section-title pricing-title">Тарифы</h2>
             <div class="pricing-grid">
                 <!-- Тариф Старт -->
-                <div class="pricing-card">
+                <div class="pricing-card" data-tariff="start" onclick="window.location.href='payment.html?tariff=start'">
                     <div class="pricing-card-header">
                         <h3 class="pricing-plan-name">Старт</h3>
                         <div class="pricing-price">
@@ -439,7 +439,7 @@
                             <span class="pricing-feature-text">Техподдержка</span>
                         </div>
                     </div>
-                    <a href="payment.html" class="pricing-button">
+                    <a href="payment.html?tariff=start" class="pricing-button" onclick="event.stopPropagation()">
                         Оформить подписку
                         <svg class="pricing-button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -449,7 +449,7 @@
                 </div>
                 
                 <!-- Тариф Бизнес -->
-                <div class="pricing-card pricing-card-featured">
+                <div class="pricing-card pricing-card-featured" data-tariff="business" onclick="window.location.href='payment.html?tariff=business'">
                     <div class="pricing-badge">Популярный</div>
                     <div class="pricing-card-header">
                         <h3 class="pricing-plan-name">Бизнес</h3>
@@ -489,7 +489,7 @@
                             <span class="pricing-feature-text">Техподдержка</span>
                         </div>
                     </div>
-                    <a href="payment.html" class="pricing-button">
+                    <a href="payment.html?tariff=business" class="pricing-button" onclick="event.stopPropagation()">
                         Оформить подписку
                         <svg class="pricing-button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -499,7 +499,7 @@
                 </div>
                 
                 <!-- Тариф Про -->
-                <div class="pricing-card">
+                <div class="pricing-card" data-tariff="pro" onclick="window.location.href='payment.html?tariff=pro'">
                     <div class="pricing-card-header">
                         <h3 class="pricing-plan-name">Про</h3>
                         <div class="pricing-price">
@@ -538,7 +538,7 @@
                             <span class="pricing-feature-text">Техподдержка</span>
                         </div>
                     </div>
-                    <a href="payment.html" class="pricing-button">
+                    <a href="payment.html?tariff=pro" class="pricing-button" onclick="event.stopPropagation()">
                         Оформить подписку
                         <svg class="pricing-button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"/>
