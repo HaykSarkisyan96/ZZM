@@ -505,37 +505,38 @@ async function checkSubscription(username) {
                 console.log('Подписка найдена при вводе:', subscriptionExists);
                 
                 if (subscriptionExists) {
-                // Подписка существует - показываем информацию, но НЕ блокируем оплату
-                hasActiveSubscription = false; // НЕ блокируем, разрешаем смену тарифа
-                // Извлекаем информацию о тарифе и дате (приоритет: из объекта subscription)
-                const subscription = data.subscription || data;
-                const tariffName = subscription.tariff_name || subscription.tariff || data.tariff_name || data.tariff || 'активна';
-                const expiresAt = subscription.expires_at || subscription.expiration_date || data.expires_at || data.expiration_date;
-                const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                }) : '';
-                
-                let message = `<strong>ℹ️ У вас уже есть активная подписка</strong><br>`;
-                message += `Текущий тариф: <strong>${tariffName}</strong>`;
-                if (formattedDate) {
-                    message += `<br>Действует до: <strong>${formattedDate}</strong>`;
+                    // Подписка существует - показываем информацию, но НЕ блокируем оплату
+                    hasActiveSubscription = false; // НЕ блокируем, разрешаем смену тарифа
+                    // Извлекаем информацию о тарифе и дате (приоритет: из объекта subscription)
+                    const subscription = data.subscription || data;
+                    const tariffName = subscription.tariff_name || subscription.tariff || data.tariff_name || data.tariff || 'активна';
+                    const expiresAt = subscription.expires_at || subscription.expiration_date || data.expires_at || data.expiration_date;
+                    const formattedDate = expiresAt ? new Date(expiresAt).toLocaleDateString('ru-RU', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    }) : '';
+                    
+                    let message = `<strong>ℹ️ У вас уже есть активная подписка</strong><br>`;
+                    message += `Текущий тариф: <strong>${tariffName}</strong>`;
+                    if (formattedDate) {
+                        message += `<br>Действует до: <strong>${formattedDate}</strong>`;
+                    }
+                    message += `<br><br>Вы можете выбрать новый тариф и оплатить его - подписка будет обновлена автоматически.`;
+                    
+                    subscriptionExistsMessage.innerHTML = message;
+                    subscriptionExistsAlert.style.display = 'flex';
+                    errorAlert.style.display = 'none';
+                    successAlert.style.display = 'none';
+                    
+                    // НЕ блокируем кнопку оплаты - разрешаем смену тарифа
+                    updatePaymentButton();
+                } else {
+                    // Подписки нет
+                    hasActiveSubscription = false;
+                    subscriptionExistsAlert.style.display = 'none';
+                    updatePaymentButton();
                 }
-                message += `<br><br>Вы можете выбрать новый тариф и оплатить его - подписка будет обновлена автоматически.`;
-                
-                subscriptionExistsMessage.innerHTML = message;
-                subscriptionExistsAlert.style.display = 'flex';
-                errorAlert.style.display = 'none';
-                successAlert.style.display = 'none';
-                
-                // НЕ блокируем кнопку оплаты - разрешаем смену тарифа
-                updatePaymentButton();
-            } else {
-                // Подписки нет
-                hasActiveSubscription = false;
-                subscriptionExistsAlert.style.display = 'none';
-                updatePaymentButton();
             }
         } else {
             // Если endpoint не существует (404) или другая ошибка
