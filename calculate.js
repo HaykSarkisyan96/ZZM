@@ -284,46 +284,30 @@ form.addEventListener('submit', async (e) => {
         }
         
         if (response.ok && data.success) {
-            // Успех
-            // Проверяем, активен ли пользователь в боте
-            // Если user_active_in_bot === false или auto_sent === false, значит нужно нажать /start
-            const userActiveInBot = data.user_active_in_bot !== false; // По умолчанию считаем активным, если поле не указано
-            const autoSent = data.auto_sent === true && userActiveInBot;  // Заявка отправлена автоматически только если пользователь активен
+            // Успех - всегда показываем инструкцию нажать /start
+            const botUsername = data.bot_username || 'MoreVkusovBot';
+            const botLink = data.bot_link || `https://t.me/${botUsername}`;
             
-            // Если пользователь не активен в боте, всегда показываем инструкцию нажать /start
-            if (!userActiveInBot || !autoSent) {
-                const botUsername = data.bot_username || 'MoreVkusovBot';
-                const botLink = data.bot_link || `https://t.me/${botUsername}`;
-                
-                const messageHTML = `
-                    <span style="font-weight: 600;">✅ Заявка готова!</span><br>
-                    <span>
-                        Перейдите в Telegram бота 
-                        <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
-                            @${botUsername}
-                            <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                        и нажмите команду <strong>/start</strong>, чтобы получить заявку.
-                    </span>
-                `;
-                
-                successMessage.innerHTML = messageHTML;
-                successAlert.style.display = 'flex';
-                errorAlert.style.display = 'none';
-                successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            } else {
-                // Пользователь активен, заявка отправлена автоматически
-                showSuccess(
-                    data.message,
-                    data.bot_link || `https://t.me/${data.bot_username || 'MoreVkusovBot'}`,
-                    data.bot_username || 'MoreVkusovBot',
-                    true // autoSent = true
-                );
-            }
+            const messageHTML = `
+                <span style="font-weight: 600;">✅ Заявка готова!</span><br>
+                <span>
+                    Перейдите в Telegram бота 
+                    <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
+                        @${botUsername}
+                        <svg class="external-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" y1="14" x2="21" y2="3"/>
+                        </svg>
+                    </a>
+                    и нажмите команду <strong>/start</strong>, чтобы получить заявку.
+                </span>
+            `;
+            
+            successMessage.innerHTML = messageHTML;
+            successAlert.style.display = 'flex';
+            errorAlert.style.display = 'none';
+            successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             
             // Очищаем файл
             hideFilePreview();

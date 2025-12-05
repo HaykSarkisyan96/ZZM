@@ -100,7 +100,6 @@ trialForm.addEventListener('submit', async (e) => {
         }
         
         // Успешная активация
-        const botLink = `https://t.me/${BOT_USERNAME}`;
         const successMsg = `
             <div style="line-height: 1.8;">
                 <div style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #00C853;">
@@ -111,33 +110,13 @@ trialForm.addEventListener('submit', async (e) => {
                     Для <strong>@${username}</strong> доступ открыт на <strong>3 дня</strong> с момента активации.
                 </div>
                 
-                <div style="margin-bottom: 24px; padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 4px solid #3B82F6;">
-                    <div style="font-weight: 600; margin-bottom: 8px; color: rgba(26, 26, 46, 0.9);">
-                        ⚠️ Важно: Сначала активируйте бота
-                    </div>
-                    <div style="color: rgba(26, 26, 46, 0.8); margin-bottom: 12px;">
-                        Перейдите в Telegram бота 
-                        <a href="${botLink}" target="_blank" rel="noopener noreferrer" style="color: hsl(210, 100%, 50%); text-decoration: underline; font-weight: 600;">
-                            @${BOT_USERNAME}
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 4px;">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                        и нажмите команду <strong>/start</strong>
-                    </div>
-                    <div style="color: rgba(26, 26, 46, 0.7); font-size: 14px;">
-                        Только после этого вы сможете получать заявки.
-                    </div>
+                <div style="margin-bottom: 24px; color: rgba(26, 26, 46, 0.8);">
+                    Теперь вы можете загрузить Excel-файл и получить первую заявку.
                 </div>
                 
-                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-                    <a href="${botLink}" target="_blank" rel="noopener noreferrer" class="payment-button" style="flex: 1 1 220px; text-align: center; background: hsl(210, 100%, 50%);">
-                        Открыть бота @${BOT_USERNAME}
-                    </a>
-                    <a href="calculate.html" class="payment-button" style="flex: 1 1 220px; text-align: center; background: rgba(26, 26, 46, 0.1); color: rgba(26, 26, 46, 0.9);">
-                        Перейти к загрузке файла
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+                    <a href="calculate.html" class="payment-button" style="flex: 1 1 220px; text-align: center; max-width: 300px;">
+                        Загрузить файл
                     </a>
                 </div>
                 
