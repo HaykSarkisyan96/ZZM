@@ -485,7 +485,42 @@ function init() {
             }
             // Программно вызываем клик на input
             console.log('Клик на dropzone, открываем диалог выбора файла');
-            fileInput.click();
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Пробуем несколько способов открыть диалог
+            try {
+                // Способ 1: прямой клик
+                if (fileInput && fileInput.click) {
+                    fileInput.click();
+                    console.log('fileInput.click() вызван');
+                } else {
+                    console.error('fileInput или fileInput.click не найден');
+                }
+            } catch (error) {
+                console.error('Ошибка при вызове fileInput.click():', error);
+                // Способ 2: создаем новый input и вызываем клик
+                try {
+                    const tempInput = document.createElement('input');
+                    tempInput.type = 'file';
+                    tempInput.accept = '.xlsx,.xls';
+                    tempInput.style.display = 'none';
+                    document.body.appendChild(tempInput);
+                    tempInput.click();
+                    tempInput.addEventListener('change', (e) => {
+                        if (e.target.files && e.target.files[0]) {
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(e.target.files[0]);
+                            fileInput.files = dataTransfer.files;
+                            const changeEvent = new Event('change', { bubbles: true });
+                            fileInput.dispatchEvent(changeEvent);
+                        }
+                        document.body.removeChild(tempInput);
+                    });
+                } catch (error2) {
+                    console.error('Ошибка при создании временного input:', error2);
+                }
+            }
         });
         
         // Загружаем сохраненные данные и обновляем кнопку
